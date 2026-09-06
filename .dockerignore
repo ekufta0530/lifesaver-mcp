@@ -1,0 +1,16 @@
+.git
+.github
+.venv
+.pytest_cache
+__pycache__
+**/__pycache__
+*.pyc
+.env
+*.csv
+!tests/fixtures/*.csv
+tests
+scripts
+report_manifest.json
+*.md
+.mcp.json
+.python-version

@@ -118,8 +118,9 @@ cookie to the plain HTTP client for steps 1–3.
 - [ ] Does the step-2 postback actually require *every* `ctl00$...` field from
       the original page echoed back, or can extraneous ones be dropped?
 - [ ] Session/cookie lifetime — how long before a re-login is needed?
-- [ ] Confirm export `Format=CSV` output is clean/parseable as-is, or if it
-      needs cleanup (headers, footer rows, etc. common in SSRS CSV exports).
+- [x] Confirm export `Format=CSV` output is clean/parseable as-is, or if it
+      needs cleanup. **Answered:** WorkOrderList's CSV is clean (UTF-8 BOM only).
+      Other reports' CSV is unusable — see "Report coverage" below.
 
 ## Phase 2 — MCP server
 
@@ -139,6 +140,49 @@ cookie to the plain HTTP client for steps 1–3.
 
 - Multi-report support beyond what Phase 1 exposes.
 - Write operations — this is read-only reporting data.
+
+## Report coverage — why this stays WorkOrderList-only
+
+`WorkOrderList` is the **only** report in `lsscloud.com` that produces usable
+tabular data. This was established, not assumed:
+
+1. `scripts/inspect/inspect_report.py` was run against the live site and captured
+   the parameter panel of all 51 report pages → `report_manifest.json`.
+2. A generalized build was wired for the 27 reports whose only parameters are a
+   start + end date (same shape as WorkOrderList) and each was pulled live.
+3. **Every one except WorkOrderList exported as SSRS visual-layout internals, not
+   data.** The CSV renderer serializes whatever the report *draws*:
+
+   | Export columns you get back | What the report actually is | Examples |
+   |---|---|---|
+   | `Textbox1`, `Textbox2`, `Textbox189`, … | a summary layout whose RDL never set `DataElementName` on its cells, so SSRS falls back to the textbox control names | Payment Summary, Order/Work-Order/Tax-Exempt summaries, Promotions, Department Sales, Production Details |
+   | `…_Chart1_CategoryGroup_label`, `…_Chart1_CategoryGroup_Value_Y` | a **chart** — you get the plotted series points | Employee Sales, Orders by Weekday, Orders by Hour, Assembly Times, Delivery Times, Glazing Usage |
+   | `RadialGauge1_RadialScale1_MinimumValue`, `RadialGauge1_RadialPointer1_GaugeInputValue`, … | a **gauge** — you get the needle position | Customer Revenue, Mat Usage, Moulding Usage |
+
+   `WorkOrderList` is the exception only because its RDL was authored with real
+   CSV column names (`invoiceNumber`, `workOrderNumber`, `customer`, …) over a
+   single flat table.
+
+That generalized build was reverted. `report_manifest.json` is kept in the repo
+as reference.
+
+### If the other reports' data is ever needed
+
+Do **not** try to parse their CSV. SSRS has an **ATOM data-feed renderer**
+(`Format=ATOM` in place of `Format=CSV` on the `Reserved.ReportViewerWebControl.axd`
+export call) that ignores the visual layout and returns the underlying *dataset*
+rows as Atom XML — one feed per data region in the report. That is the path to
+structured data from the dashboard-style reports. It is a separate effort: it
+needs XML parsing and handling of multiple feeds per report, and each report's
+datasets still have to be understood individually.
+
+### Also unmapped regardless of export format
+
+Reports whose parameter panel is more than two date textboxes were never wired at
+all (dropdowns, radio toggles, month/year pickers, multi-value text filters). The
+two `/Reporting/`-prefixed pages (`LifeSaverPaymentsPayoutReport`, `ReprintInvoice`)
+are not ReportViewer pages. `PastDue` renders with no parameter panel. Field
+layouts for all of these are in `report_manifest.json`.
 
 ## Environment / running notes
 

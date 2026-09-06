@@ -1,0 +1,2950 @@
+{
+  "/Reports/WorkOrderList": {
+    "path": "/Reports/WorkOrderList",
+    "final_url": "https://lsscloud.com/Reports/WorkOrderList",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "9/6/2025"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Work Orders",
+    "name": "Work Order List"
+  },
+  "/Reports/PaymentSummary": {
+    "path": "/Reports/PaymentSummary",
+    "final_url": "https://lsscloud.com/Reports/PaymentSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date:",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date:",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Payments",
+    "name": "Payment Summary"
+  },
+  "/Reports/PaymentSummaryMonthly": {
+    "path": "/Reports/PaymentSummaryMonthly",
+    "final_url": "https://lsscloud.com/Reports/PaymentSummaryMonthly",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Month",
+        "current_value": null,
+        "options": [
+          {
+            "value": "b88de8d8-9b5a-49d5-900c-5e5e69df5f0e",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "January"
+          },
+          {
+            "value": "2",
+            "text": "February"
+          },
+          {
+            "value": "3",
+            "text": "March"
+          },
+          {
+            "value": "4",
+            "text": "April"
+          },
+          {
+            "value": "5",
+            "text": "May"
+          },
+          {
+            "value": "6",
+            "text": "June"
+          },
+          {
+            "value": "7",
+            "text": "July"
+          },
+          {
+            "value": "8",
+            "text": "August"
+          },
+          {
+            "value": "9",
+            "text": "September"
+          },
+          {
+            "value": "10",
+            "text": "October"
+          },
+          {
+            "value": "11",
+            "text": "November"
+          },
+          {
+            "value": "12",
+            "text": "December"
+          }
+        ]
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Year",
+        "current_value": null,
+        "options": [
+          {
+            "value": "5373d9f4-9596-4d84-918b-89de98562c62",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "2026"
+          },
+          {
+            "value": "2",
+            "text": "2025"
+          },
+          {
+            "value": "3",
+            "text": "2024"
+          },
+          {
+            "value": "4",
+            "text": "2023"
+          },
+          {
+            "value": "5",
+            "text": "2022"
+          },
+          {
+            "value": "6",
+            "text": "2021"
+          },
+          {
+            "value": "7",
+            "text": "2020"
+          },
+          {
+            "value": "8",
+            "text": "2019"
+          },
+          {
+            "value": "9",
+            "text": "2018"
+          },
+          {
+            "value": "10",
+            "text": "2017"
+          },
+          {
+            "value": "11",
+            "text": "2016"
+          },
+          {
+            "value": "12",
+            "text": "2015"
+          },
+          {
+            "value": "13",
+            "text": "2014"
+          },
+          {
+            "value": "14",
+            "text": "2013"
+          },
+          {
+            "value": "15",
+            "text": "2012"
+          },
+          {
+            "value": "16",
+            "text": "2011"
+          },
+          {
+            "value": "17",
+            "text": "2010"
+          },
+          {
+            "value": "18",
+            "text": "2009"
+          },
+          {
+            "value": "19",
+            "text": "2008"
+          },
+          {
+            "value": "20",
+            "text": "2007"
+          },
+          {
+            "value": "21",
+            "text": "2006"
+          },
+          {
+            "value": "22",
+            "text": "2005"
+          },
+          {
+            "value": "23",
+            "text": "2004"
+          },
+          {
+            "value": "24",
+            "text": "2003"
+          },
+          {
+            "value": "25",
+            "text": "2002"
+          },
+          {
+            "value": "26",
+            "text": "2001"
+          },
+          {
+            "value": "27",
+            "text": "2000"
+          },
+          {
+            "value": "28",
+            "text": "1999"
+          },
+          {
+            "value": "29",
+            "text": "1998"
+          },
+          {
+            "value": "30",
+            "text": "1997"
+          },
+          {
+            "value": "31",
+            "text": "1996"
+          },
+          {
+            "value": "32",
+            "text": "1995"
+          },
+          {
+            "value": "33",
+            "text": "1994"
+          },
+          {
+            "value": "34",
+            "text": "1993"
+          },
+          {
+            "value": "35",
+            "text": "1992"
+          },
+          {
+            "value": "36",
+            "text": "1991"
+          },
+          {
+            "value": "37",
+            "text": "1980"
+          },
+          {
+            "value": "38",
+            "text": "1976"
+          },
+          {
+            "value": "39",
+            "text": "1969"
+          },
+          {
+            "value": "40",
+            "text": "1956"
+          },
+          {
+            "value": "41",
+            "text": "1948"
+          },
+          {
+            "value": "42",
+            "text": "1919"
+          },
+          {
+            "value": "43",
+            "text": "1904"
+          },
+          {
+            "value": "44",
+            "text": "1900"
+          }
+        ]
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Payments",
+    "name": "Payment Summary Monthly"
+  },
+  "/Reporting/LifeSaverPaymentsPayoutReport": {
+    "path": "/Reporting/LifeSaverPaymentsPayoutReport",
+    "final_url": "https://lsscloud.com/Reporting/LifeSaverPaymentsPayoutReport",
+    "http_status": 200,
+    "note": "This path is not under /Reports/ like the rest of the catalog -- confirm by hand whether it's a ReportViewer page at all before trusting the parsed fields below.",
+    "reportviewer_button_found": false,
+    "parameters": [],
+    "all_reportviewer_fields_on_page": [],
+    "needs_manual_review": true,
+    "review_reason": "No ctl08$ctl00 'View Report' button found -- this page may not be a standard ReportViewer parameter page (no parameters at all, a completely different form, or a login/redirect landed here instead). See all_reportviewer_fields_on_page for any stray reportViewer fields, and inspect final_url/http_status.",
+    "category": "Payments",
+    "name": "LifeSaver Payments Payouts"
+  },
+  "/Reports/WriteOffSummary": {
+    "path": "/Reports/WriteOffSummary",
+    "final_url": "https://lsscloud.com/Reports/WriteOffSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date:",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date:",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Payments",
+    "name": "Write-off Summary"
+  },
+  "/Reports/FramingOrderSummary": {
+    "path": "/Reports/FramingOrderSummary",
+    "final_url": "https://lsscloud.com/Reports/FramingOrderSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date:",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date:",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Orders",
+    "name": "Order Summary"
+  },
+  "/Reports/OrderSummaryMonthly": {
+    "path": "/Reports/OrderSummaryMonthly",
+    "final_url": "https://lsscloud.com/Reports/OrderSummaryMonthly",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Month",
+        "current_value": null,
+        "options": [
+          {
+            "value": "a988fca2-2e32-4af4-836e-502d2b7d3d35",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "January"
+          },
+          {
+            "value": "2",
+            "text": "February"
+          },
+          {
+            "value": "3",
+            "text": "March"
+          },
+          {
+            "value": "4",
+            "text": "April"
+          },
+          {
+            "value": "5",
+            "text": "May"
+          },
+          {
+            "value": "6",
+            "text": "June"
+          },
+          {
+            "value": "7",
+            "text": "July"
+          },
+          {
+            "value": "8",
+            "text": "August"
+          },
+          {
+            "value": "9",
+            "text": "September"
+          },
+          {
+            "value": "10",
+            "text": "October"
+          },
+          {
+            "value": "11",
+            "text": "November"
+          },
+          {
+            "value": "12",
+            "text": "December"
+          }
+        ]
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Year",
+        "current_value": null,
+        "options": [
+          {
+            "value": "a97e7a21-3e5b-46c9-8f34-5cc52c776787",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "2026"
+          },
+          {
+            "value": "2",
+            "text": "2025"
+          },
+          {
+            "value": "3",
+            "text": "2024"
+          },
+          {
+            "value": "4",
+            "text": "2023"
+          },
+          {
+            "value": "5",
+            "text": "2022"
+          },
+          {
+            "value": "6",
+            "text": "2021"
+          },
+          {
+            "value": "7",
+            "text": "2020"
+          },
+          {
+            "value": "8",
+            "text": "2019"
+          },
+          {
+            "value": "9",
+            "text": "2018"
+          },
+          {
+            "value": "10",
+            "text": "2017"
+          },
+          {
+            "value": "11",
+            "text": "2016"
+          },
+          {
+            "value": "12",
+            "text": "2015"
+          },
+          {
+            "value": "13",
+            "text": "2014"
+          },
+          {
+            "value": "14",
+            "text": "2013"
+          },
+          {
+            "value": "15",
+            "text": "2012"
+          },
+          {
+            "value": "16",
+            "text": "2011"
+          },
+          {
+            "value": "17",
+            "text": "2010"
+          },
+          {
+            "value": "18",
+            "text": "2009"
+          },
+          {
+            "value": "19",
+            "text": "2008"
+          },
+          {
+            "value": "20",
+            "text": "2007"
+          },
+          {
+            "value": "21",
+            "text": "2006"
+          },
+          {
+            "value": "22",
+            "text": "2005"
+          },
+          {
+            "value": "23",
+            "text": "2004"
+          },
+          {
+            "value": "24",
+            "text": "2003"
+          },
+          {
+            "value": "25",
+            "text": "2002"
+          },
+          {
+            "value": "26",
+            "text": "2001"
+          },
+          {
+            "value": "27",
+            "text": "2000"
+          },
+          {
+            "value": "28",
+            "text": "1999"
+          },
+          {
+            "value": "29",
+            "text": "1998"
+          },
+          {
+            "value": "30",
+            "text": "1997"
+          },
+          {
+            "value": "31",
+            "text": "1996"
+          },
+          {
+            "value": "32",
+            "text": "1995"
+          },
+          {
+            "value": "33",
+            "text": "1994"
+          },
+          {
+            "value": "34",
+            "text": "1993"
+          },
+          {
+            "value": "35",
+            "text": "1992"
+          },
+          {
+            "value": "36",
+            "text": "1991"
+          },
+          {
+            "value": "37",
+            "text": "1980"
+          },
+          {
+            "value": "38",
+            "text": "1976"
+          },
+          {
+            "value": "39",
+            "text": "1969"
+          },
+          {
+            "value": "40",
+            "text": "1956"
+          },
+          {
+            "value": "41",
+            "text": "1948"
+          },
+          {
+            "value": "42",
+            "text": "1919"
+          },
+          {
+            "value": "43",
+            "text": "1904"
+          },
+          {
+            "value": "44",
+            "text": "1900"
+          }
+        ]
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Orders",
+    "name": "Order Summary Monthly"
+  },
+  "/Reports/DeliveredOrderSummary": {
+    "path": "/Reports/DeliveredOrderSummary",
+    "final_url": "https://lsscloud.com/Reports/DeliveredOrderSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Orders",
+    "name": "Delivered Order Summary"
+  },
+  "/Reports/UndeliveredOrderSummary": {
+    "path": "/Reports/UndeliveredOrderSummary",
+    "final_url": "https://lsscloud.com/Reports/UndeliveredOrderSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "5/7/2024"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_rbTrue",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "Framing Orders Only",
+        "current_value": "rbTrue"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_rbFalse",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "True",
+        "current_value": "rbFalse"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09_rbTrue",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "Assembled Orders Only",
+        "current_value": "rbTrue"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09_rbFalse",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "True",
+        "current_value": "rbFalse"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Orders",
+    "name": "Undelivered Order Summary"
+  },
+  "/Reports/VoidedOrderSummary": {
+    "path": "/Reports/VoidedOrderSummary",
+    "final_url": "https://lsscloud.com/Reports/VoidedOrderSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "9/5/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Orders",
+    "name": "Voided Order Summary"
+  },
+  "/Reports/QuoteSummary": {
+    "path": "/Reports/QuoteSummary",
+    "final_url": "https://lsscloud.com/Reports/QuoteSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date:",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date:",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Filter:",
+        "current_value": null,
+        "options": [
+          {
+            "value": "72b9f92b-41d6-4d31-b4c5-53922b58b5a0",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "Only\u00a0display\u00a0open\u00a0quotes"
+          },
+          {
+            "value": "2",
+            "text": "Include\u00a0quotes\u00a0that\u00a0have\u00a0been\u00a0turned\u00a0into\u00a0live\u00a0invoices"
+          },
+          {
+            "value": "3",
+            "text": "Only\u00a0display\u00a0quotes\u00a0that\u00a0have\u00a0been\u00a0turned\u00a0into\u00a0live\u00a0invoices"
+          }
+        ]
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Orders",
+    "name": "Quote Summary"
+  },
+  "/Reports/WorkOrderSummary": {
+    "path": "/Reports/WorkOrderSummary",
+    "final_url": "https://lsscloud.com/Reports/WorkOrderSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date:",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date:",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Orders",
+    "name": "Work Order Summary"
+  },
+  "/Reports/ArtCopies": {
+    "path": "/Reports/ArtCopies",
+    "final_url": "https://lsscloud.com/Reports/ArtCopies",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Work Orders",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Number of Copies",
+        "current_value": null,
+        "options": [
+          {
+            "value": "c3221d5e-bda7-407c-86c8-c1bbe50b5342",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "1"
+          },
+          {
+            "value": "2",
+            "text": "2"
+          },
+          {
+            "value": "3",
+            "text": "3"
+          },
+          {
+            "value": "4",
+            "text": "4"
+          },
+          {
+            "value": "5",
+            "text": "5"
+          },
+          {
+            "value": "6",
+            "text": "6"
+          },
+          {
+            "value": "7",
+            "text": "7"
+          },
+          {
+            "value": "8",
+            "text": "8"
+          },
+          {
+            "value": "9",
+            "text": "9"
+          },
+          {
+            "value": "10",
+            "text": "10"
+          },
+          {
+            "value": "11",
+            "text": "11"
+          },
+          {
+            "value": "12",
+            "text": "12"
+          }
+        ]
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Work Orders",
+    "name": "Art Copies"
+  },
+  "/Reports/PickList": {
+    "path": "/Reports/PickList",
+    "final_url": "https://lsscloud.com/Reports/PickList",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start of Work Order Range:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End of Work Order Range:",
+        "current_value": "1088"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_rbTrue",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "Include older orders that were revised:",
+        "current_value": "rbTrue"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_rbFalse",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "True",
+        "current_value": "rbFalse"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Order Status:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl11$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl11_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Report Type:",
+        "current_value": null,
+        "options": [
+          {
+            "value": "69d68f59-be4e-426d-8d63-ec3e3b8c0048",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "By\u00a0Customer"
+          },
+          {
+            "value": "2",
+            "text": "Moulding\u00a0by\u00a0Vendor"
+          },
+          {
+            "value": "3",
+            "text": "Mat\u00a0by\u00a0Vendor"
+          },
+          {
+            "value": "4",
+            "text": "Fabric\u00a0by\u00a0Vendor"
+          },
+          {
+            "value": "5",
+            "text": "All\u00a0Materials\u00a0by\u00a0Vendor"
+          }
+        ]
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Work Orders",
+    "name": "PickList"
+  },
+  "/Reports/CutList": {
+    "path": "/Reports/CutList",
+    "final_url": "https://lsscloud.com/Reports/CutList",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Group by:",
+        "current_value": null,
+        "options": [
+          {
+            "value": "b2f00512-9dec-4d14-be89-d004bd2ef589",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "Date"
+          },
+          {
+            "value": "2",
+            "text": "Item"
+          },
+          {
+            "value": "3",
+            "text": "Date\u00a0and\u00a0Item"
+          }
+        ]
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date:",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date:",
+        "current_value": "9/13/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Work Orders",
+    "name": "Cut List"
+  },
+  "/Reports/PaidInFull": {
+    "path": "/Reports/PaidInFull",
+    "final_url": "https://lsscloud.com/Reports/PaidInFull",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Paid In Full",
+    "name": "Paid In Full"
+  },
+  "/Reports/PaidInFullMonthly": {
+    "path": "/Reports/PaidInFullMonthly",
+    "final_url": "https://lsscloud.com/Reports/PaidInFullMonthly",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Month",
+        "current_value": null,
+        "options": [
+          {
+            "value": "3ee7031f-86c8-4471-b6a5-b1948e2c4254",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "January"
+          },
+          {
+            "value": "2",
+            "text": "February"
+          },
+          {
+            "value": "3",
+            "text": "March"
+          },
+          {
+            "value": "4",
+            "text": "April"
+          },
+          {
+            "value": "5",
+            "text": "May"
+          },
+          {
+            "value": "6",
+            "text": "June"
+          },
+          {
+            "value": "7",
+            "text": "July"
+          },
+          {
+            "value": "8",
+            "text": "August"
+          },
+          {
+            "value": "9",
+            "text": "September"
+          },
+          {
+            "value": "10",
+            "text": "October"
+          },
+          {
+            "value": "11",
+            "text": "November"
+          },
+          {
+            "value": "12",
+            "text": "December"
+          }
+        ]
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Year",
+        "current_value": null,
+        "options": [
+          {
+            "value": "fd0794a3-014c-49e5-bf9a-007a66abd1e0",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "2026"
+          },
+          {
+            "value": "2",
+            "text": "2025"
+          },
+          {
+            "value": "3",
+            "text": "2024"
+          },
+          {
+            "value": "4",
+            "text": "2023"
+          },
+          {
+            "value": "5",
+            "text": "2022"
+          },
+          {
+            "value": "6",
+            "text": "2021"
+          },
+          {
+            "value": "7",
+            "text": "2020"
+          },
+          {
+            "value": "8",
+            "text": "2019"
+          },
+          {
+            "value": "9",
+            "text": "2018"
+          },
+          {
+            "value": "10",
+            "text": "2017"
+          },
+          {
+            "value": "11",
+            "text": "2016"
+          },
+          {
+            "value": "12",
+            "text": "2015"
+          },
+          {
+            "value": "13",
+            "text": "2014"
+          },
+          {
+            "value": "14",
+            "text": "2013"
+          },
+          {
+            "value": "15",
+            "text": "2012"
+          },
+          {
+            "value": "16",
+            "text": "2011"
+          },
+          {
+            "value": "17",
+            "text": "2010"
+          },
+          {
+            "value": "18",
+            "text": "2009"
+          },
+          {
+            "value": "19",
+            "text": "2008"
+          },
+          {
+            "value": "20",
+            "text": "2007"
+          },
+          {
+            "value": "21",
+            "text": "2006"
+          },
+          {
+            "value": "22",
+            "text": "2005"
+          },
+          {
+            "value": "23",
+            "text": "2004"
+          },
+          {
+            "value": "24",
+            "text": "2003"
+          },
+          {
+            "value": "25",
+            "text": "2002"
+          },
+          {
+            "value": "26",
+            "text": "2001"
+          },
+          {
+            "value": "27",
+            "text": "2000"
+          },
+          {
+            "value": "28",
+            "text": "1999"
+          },
+          {
+            "value": "29",
+            "text": "1998"
+          },
+          {
+            "value": "30",
+            "text": "1997"
+          },
+          {
+            "value": "31",
+            "text": "1996"
+          },
+          {
+            "value": "32",
+            "text": "1995"
+          },
+          {
+            "value": "33",
+            "text": "1994"
+          },
+          {
+            "value": "34",
+            "text": "1993"
+          },
+          {
+            "value": "35",
+            "text": "1992"
+          },
+          {
+            "value": "36",
+            "text": "1991"
+          },
+          {
+            "value": "37",
+            "text": "1980"
+          },
+          {
+            "value": "38",
+            "text": "1976"
+          },
+          {
+            "value": "39",
+            "text": "1969"
+          },
+          {
+            "value": "40",
+            "text": "1956"
+          },
+          {
+            "value": "41",
+            "text": "1948"
+          },
+          {
+            "value": "42",
+            "text": "1919"
+          },
+          {
+            "value": "43",
+            "text": "1904"
+          },
+          {
+            "value": "44",
+            "text": "1900"
+          }
+        ]
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Paid In Full",
+    "name": "Paid In Full Monthly"
+  },
+  "/Reports/EmployeeSales": {
+    "path": "/Reports/EmployeeSales",
+    "final_url": "https://lsscloud.com/Reports/EmployeeSales",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Ticket Sales",
+    "name": "Employee Sales"
+  },
+  "/Reports/Salesperson": {
+    "path": "/Reports/Salesperson",
+    "final_url": "https://lsscloud.com/Reports/Salesperson",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Salesperson",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09_rbTrue",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "Show Invoice Detail",
+        "current_value": "rbTrue"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09_rbFalse",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "True",
+        "current_value": "rbFalse"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Ticket Sales",
+    "name": "Salesperson"
+  },
+  "/Reports/ArtSales": {
+    "path": "/Reports/ArtSales",
+    "final_url": "https://lsscloud.com/Reports/ArtSales",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Inventory Type",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Supplier",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl11$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl11_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Artist",
+        "current_value": null
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Ticket Sales",
+    "name": "Inventory Sales"
+  },
+  "/Reports/Promotions": {
+    "path": "/Reports/Promotions",
+    "final_url": "https://lsscloud.com/Reports/Promotions",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Ticket Sales",
+    "name": "Promotions"
+  },
+  "/Reports/PromotionsSummary": {
+    "path": "/Reports/PromotionsSummary",
+    "final_url": "https://lsscloud.com/Reports/PromotionsSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_rbTrue",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "Include orders with no promotion",
+        "current_value": "rbTrue"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_rbFalse",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "True",
+        "current_value": "rbFalse"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09_rbTrue",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "Include promotions with no sales",
+        "current_value": "rbTrue"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09_rbFalse",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "True",
+        "current_value": "rbFalse"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl11$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl11",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl11_rbTrue",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "Include permanent promotions",
+        "current_value": "rbTrue"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl11$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl11",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl11_rbFalse",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "True",
+        "current_value": "rbFalse"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl13$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl13",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl13_rbTrue",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "Include deleted promotions",
+        "current_value": "rbTrue"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl13$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl13",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl13_rbFalse",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "True",
+        "current_value": "rbFalse"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Ticket Sales",
+    "name": "Promotions Summary"
+  },
+  "/Reports/ManuallyEnteredItems": {
+    "path": "/Reports/ManuallyEnteredItems",
+    "final_url": "https://lsscloud.com/Reports/ManuallyEnteredItems",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Ticket Sales",
+    "name": "Manually Entered Items"
+  },
+  "/Reports/DepartmentSales": {
+    "path": "/Reports/DepartmentSales",
+    "final_url": "https://lsscloud.com/Reports/DepartmentSales",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "9/5/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/5/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Ticket Sales",
+    "name": "Department Sales"
+  },
+  "/Reports/ConsumerRevenueSummary": {
+    "path": "/Reports/ConsumerRevenueSummary",
+    "final_url": "https://lsscloud.com/Reports/ConsumerRevenueSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Customer",
+    "name": "Customer Revenue"
+  },
+  "/Reports/ConsumerInfoReport": {
+    "path": "/Reports/ConsumerInfoReport",
+    "final_url": "https://lsscloud.com/Reports/ConsumerInfoReport",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Customer Groups:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Show these fields:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_rbTrue",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "Only show customers who have an email address:",
+        "current_value": "rbTrue"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_rbFalse",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "True",
+        "current_value": "rbFalse"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Filter:",
+        "current_value": null,
+        "options": [
+          {
+            "value": "90987e89-7f04-43ac-9a50-b0e4b4f9d5f3",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "No\u00a0filter,\u00a0show\u00a0all\u00a0customers."
+          },
+          {
+            "value": "2",
+            "text": "Show\u00a0customers\u00a0who\u00a0placed\u00a0an\u00a0order\u00a0within\u00a0the\u00a0date\u00a0range."
+          },
+          {
+            "value": "3",
+            "text": "Show\u00a0customers\u00a0who\u00a0ordered\u00a0a\u00a0certain\u00a0dollar\u00a0amount."
+          },
+          {
+            "value": "4",
+            "text": "Show\u00a0customers\u00a0who\u00a0ordered\u00a0a\u00a0certain\u00a0dollar\u00a0amount\u00a0within\u00a0the\u00a0date\u00a0range."
+          },
+          {
+            "value": "5",
+            "text": "Show\u00a0customers\u00a0who\u00a0placed\u00a0a\u00a0certain\u00a0number\u00a0of\u00a0orders\u00a0within\u00a0the\u00a0date\u00a0range."
+          },
+          {
+            "value": "6",
+            "text": "Show\u00a0only\u00a0the\u00a0top\u00a0customers\u00a0within\u00a0the\u00a0date\u00a0range."
+          }
+        ]
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl11$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl11_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl13$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl13_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl15$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl15_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Order amount/qty between",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl17$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl17_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "and",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl19$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl19_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "This many top customers:",
+        "current_value": null
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Customer",
+    "name": "Customer Export"
+  },
+  "/Reports/CustomerInfoExport_ConstantContact": {
+    "path": "/Reports/CustomerInfoExport_ConstantContact",
+    "final_url": "https://lsscloud.com/Reports/CustomerInfoExport_ConstantContact",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Customer Groups:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Filter:",
+        "current_value": null,
+        "options": [
+          {
+            "value": "e46b1184-badd-46d2-830e-f1e45252ee2c",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "No\u00a0filter,\u00a0show\u00a0all\u00a0customers."
+          },
+          {
+            "value": "2",
+            "text": "Show\u00a0customers\u00a0who\u00a0placed\u00a0an\u00a0order\u00a0within\u00a0the\u00a0date\u00a0range."
+          },
+          {
+            "value": "3",
+            "text": "Show\u00a0customers\u00a0who\u00a0ordered\u00a0a\u00a0certain\u00a0dollar\u00a0amount."
+          },
+          {
+            "value": "4",
+            "text": "Show\u00a0customers\u00a0who\u00a0ordered\u00a0a\u00a0certain\u00a0dollar\u00a0amount\u00a0within\u00a0the\u00a0date\u00a0range."
+          },
+          {
+            "value": "5",
+            "text": "Show\u00a0customers\u00a0who\u00a0placed\u00a0a\u00a0certain\u00a0number\u00a0of\u00a0orders\u00a0within\u00a0the\u00a0date\u00a0range."
+          },
+          {
+            "value": "6",
+            "text": "Show\u00a0only\u00a0the\u00a0top\u00a0customers\u00a0within\u00a0the\u00a0date\u00a0range."
+          }
+        ]
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl11$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl11_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Order amount/qty between",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl13$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl13_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "and",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl15$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl15_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "This many top customers:",
+        "current_value": null
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Customer",
+    "name": "Constant Contact Export"
+  },
+  "/Reports/CustomerInfoExport_Mailchimp": {
+    "path": "/Reports/CustomerInfoExport_Mailchimp",
+    "final_url": "https://lsscloud.com/Reports/CustomerInfoExport_Mailchimp",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Customer Groups:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Filter:",
+        "current_value": null,
+        "options": [
+          {
+            "value": "d0319314-534f-4005-8b5e-4d85c6c8a256",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "No\u00a0filter,\u00a0show\u00a0all\u00a0customers."
+          },
+          {
+            "value": "2",
+            "text": "Show\u00a0customers\u00a0who\u00a0placed\u00a0an\u00a0order\u00a0within\u00a0the\u00a0date\u00a0range."
+          },
+          {
+            "value": "3",
+            "text": "Show\u00a0customers\u00a0who\u00a0ordered\u00a0a\u00a0certain\u00a0dollar\u00a0amount."
+          },
+          {
+            "value": "4",
+            "text": "Show\u00a0customers\u00a0who\u00a0ordered\u00a0a\u00a0certain\u00a0dollar\u00a0amount\u00a0within\u00a0the\u00a0date\u00a0range."
+          },
+          {
+            "value": "5",
+            "text": "Show\u00a0customers\u00a0who\u00a0placed\u00a0a\u00a0certain\u00a0number\u00a0of\u00a0orders\u00a0within\u00a0the\u00a0date\u00a0range."
+          },
+          {
+            "value": "6",
+            "text": "Show\u00a0only\u00a0the\u00a0top\u00a0customers\u00a0within\u00a0the\u00a0date\u00a0range."
+          }
+        ]
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl11$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl11_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Order amount/qty between",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl13$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl13_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "and",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl15$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl15_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "This many top customers:",
+        "current_value": null
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Customer",
+    "name": "Mailchimp Contact Export"
+  },
+  "/Reports/Production": {
+    "path": "/Reports/Production",
+    "final_url": "https://lsscloud.com/Reports/Production",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Assembled between",
+        "current_value": "8/7/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "and",
+        "current_value": "9/7/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Production",
+    "name": "Details"
+  },
+  "/Reports/PastDue": {
+    "path": "/Reports/PastDue",
+    "final_url": "https://lsscloud.com/Reports/PastDue",
+    "http_status": 200,
+    "reportviewer_button_found": false,
+    "parameters": [],
+    "all_reportviewer_fields_on_page": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl03$ctl00",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl03_ctl00",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl03$ctl01",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl03_ctl01",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$isReportViewerInVs",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_isReportViewerInVs",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl14",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl14",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl15",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl15",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$AsyncWait$HiddenCancelField",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_AsyncWait_HiddenCancelField",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ToggleParam$img",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ToggleParam_img",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ToggleParam$store",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ToggleParam_store",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ToggleParam$collapse",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ToggleParam_collapse",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl09$ctl00$CurrentPage",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl09_ctl00_CurrentPage",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl09$ctl02$ctl00",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl09_ctl02_ctl00",
+        "tag": "select"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl09$ctl03$ctl00",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl09_ctl03_ctl00",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl12$ClientClickedId",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl12_ClientClickedId",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl11$img",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl11_img",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl11$store",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl11_store",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl11$collapse",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl11_collapse",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl13$VisibilityState$ctl00",
+        "field_id": null,
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl13$ScrollPosition",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl13_ScrollPosition",
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl13$ReportControl$ctl02",
+        "field_id": null,
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl13$ReportControl$ctl03",
+        "field_id": null,
+        "tag": "input"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl13$ReportControl$ctl04",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl13_ReportControl_ctl04",
+        "tag": "input"
+      }
+    ],
+    "needs_manual_review": true,
+    "review_reason": "No ctl08$ctl00 'View Report' button found -- this page may not be a standard ReportViewer parameter page (no parameters at all, a completely different form, or a login/redirect landed here instead). See all_reportviewer_fields_on_page for any stray reportViewer fields, and inspect final_url/http_status.",
+    "category": "Production",
+    "name": "Past Due"
+  },
+  "/Reports/OrdersByWeekday": {
+    "path": "/Reports/OrdersByWeekday",
+    "final_url": "https://lsscloud.com/Reports/OrdersByWeekday",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Production",
+    "name": "Orders by Weekday"
+  },
+  "/Reports/OrdersByHour": {
+    "path": "/Reports/OrdersByHour",
+    "final_url": "https://lsscloud.com/Reports/OrdersByHour",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Production",
+    "name": "Orders by Hour"
+  },
+  "/Reports/AssemblyTimes": {
+    "path": "/Reports/AssemblyTimes",
+    "final_url": "https://lsscloud.com/Reports/AssemblyTimes",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Order date between",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "and",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Production",
+    "name": "Assembly Times"
+  },
+  "/Reports/DeliveryTimes": {
+    "path": "/Reports/DeliveryTimes",
+    "final_url": "https://lsscloud.com/Reports/DeliveryTimes",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Order date between",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "and",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Production",
+    "name": "Delivery Times"
+  },
+  "/Reports/ProductionLog": {
+    "path": "/Reports/ProductionLog",
+    "final_url": "https://lsscloud.com/Reports/ProductionLog",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_rbTrue",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "Filter By Due Date",
+        "current_value": "rbTrue"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_rbFalse",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "True",
+        "current_value": "rbFalse"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Due Date between",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "and",
+        "current_value": "9/12/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Status",
+        "current_value": null
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Production",
+    "name": "Production Log"
+  },
+  "/Reports/CallList": {
+    "path": "/Reports/CallList",
+    "final_url": "https://lsscloud.com/Reports/CallList",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Include these statuses:",
+        "current_value": null
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Production",
+    "name": "Call List"
+  },
+  "/Reports/MatUsage": {
+    "path": "/Reports/MatUsage",
+    "final_url": "https://lsscloud.com/Reports/MatUsage",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Material Usage",
+    "name": "Mats"
+  },
+  "/Reports/MouldingUsage": {
+    "path": "/Reports/MouldingUsage",
+    "final_url": "https://lsscloud.com/Reports/MouldingUsage",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Material Usage",
+    "name": "Mouldings"
+  },
+  "/Reports/GlazingUsage": {
+    "path": "/Reports/GlazingUsage",
+    "final_url": "https://lsscloud.com/Reports/GlazingUsage",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "8/30/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Material Usage",
+    "name": "Glazing"
+  },
+  "/Reports/MaterialDetail": {
+    "path": "/Reports/MaterialDetail",
+    "final_url": "https://lsscloud.com/Reports/MaterialDetail",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "8/1/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "8/31/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Material Usage",
+    "name": "Material Detail"
+  },
+  "/Reports/MouldingBin": {
+    "path": "/Reports/MouldingBin",
+    "final_url": "https://lsscloud.com/Reports/MouldingBin",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Bin Range Start:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Bin Range End:",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Vendors:",
+        "current_value": null
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Material Usage",
+    "name": "Moulding Bin"
+  },
+  "/Reporting/ReprintInvoice": {
+    "path": "/Reporting/ReprintInvoice",
+    "final_url": "https://lsscloud.com/Reporting/ReprintInvoice",
+    "http_status": 200,
+    "note": "This path is not under /Reports/ like the rest of the catalog -- confirm by hand whether it's a ReportViewer page at all before trusting the parsed fields below.",
+    "reportviewer_button_found": false,
+    "parameters": [],
+    "all_reportviewer_fields_on_page": [],
+    "needs_manual_review": true,
+    "review_reason": "No ctl08$ctl00 'View Report' button found -- this page may not be a standard ReportViewer parameter page (no parameters at all, a completely different form, or a login/redirect landed here instead). See all_reportviewer_fields_on_page for any stray reportViewer fields, and inspect final_url/http_status.",
+    "category": "Invoices",
+    "name": "Find Invoice"
+  },
+  "/Reports/ClosingSummary": {
+    "path": "/Reports/ClosingSummary",
+    "final_url": "https://lsscloud.com/Reports/ClosingSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Closing",
+    "name": "Closing Summary"
+  },
+  "/Reports/Receivables": {
+    "path": "/Reports/Receivables",
+    "final_url": "https://lsscloud.com/Reports/Receivables",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Minimum days old:",
+        "current_value": "0"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Maximum days old:",
+        "current_value": "60"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Select Customers:",
+        "current_value": null
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Closing",
+    "name": "Receivables"
+  },
+  "/Reports/VendorUpdate": {
+    "path": "/Reports/VendorUpdate",
+    "final_url": "https://lsscloud.com/Reports/VendorUpdate",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "View Updates Since",
+        "current_value": "8/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Show",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Vendors",
+        "current_value": null
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Inventory",
+    "name": "Vendor Updates"
+  },
+  "/Reports/ArtInventory": {
+    "path": "/Reports/ArtInventory",
+    "final_url": "https://lsscloud.com/Reports/ArtInventory",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_rbTrue",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "In Stock Items Only",
+        "current_value": "rbTrue"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_rbFalse",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "True",
+        "current_value": "rbFalse"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_rbTrue",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "Bins Only",
+        "current_value": "rbTrue"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_rbFalse",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "True",
+        "current_value": "rbFalse"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl07$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl07_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Item Type",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$ddValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl09_ddValue",
+        "tag": "select",
+        "input_type": null,
+        "label_guess": "Consigned Items",
+        "current_value": null,
+        "options": [
+          {
+            "value": "9ba861b9-1e98-4e0f-b1b0-1c80db8744d6",
+            "text": "<Select\u00a0a\u00a0Value>"
+          },
+          {
+            "value": "1",
+            "text": "Show\u00a0All"
+          },
+          {
+            "value": "2",
+            "text": "Consigned\u00a0Items\u00a0Only"
+          },
+          {
+            "value": "3",
+            "text": "Consigned\u00a0Items\u00a0Excluded"
+          }
+        ]
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl11$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl11_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Department",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl13$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl13_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Vendor/Supplier",
+        "current_value": null
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Inventory",
+    "name": "Inventory Detail"
+  },
+  "/Reports/TaxExemptOrderSummary": {
+    "path": "/Reports/TaxExemptOrderSummary",
+    "final_url": "https://lsscloud.com/Reports/TaxExemptOrderSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date:",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date:",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Tax Exempt",
+    "name": "Tax Exempt Orders"
+  },
+  "/Reports/TaxExemptDeliveredOrderSummary": {
+    "path": "/Reports/TaxExemptDeliveredOrderSummary",
+    "final_url": "https://lsscloud.com/Reports/TaxExemptDeliveredOrderSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date:",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date:",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Tax Exempt",
+    "name": "Tax Exempt Delivered Orders"
+  },
+  "/Reports/TaxExemptPaymentSummary": {
+    "path": "/Reports/TaxExemptPaymentSummary",
+    "final_url": "https://lsscloud.com/Reports/TaxExemptPaymentSummary",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date:",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date:",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Tax Exempt",
+    "name": "Tax Exempt Payments"
+  },
+  "/Reports/TaxExemptPaidInFull": {
+    "path": "/Reports/TaxExemptPaidInFull",
+    "final_url": "https://lsscloud.com/Reports/TaxExemptPaidInFull",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "Start Date:",
+        "current_value": "9/6/2026"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "End Date:",
+        "current_value": "9/6/2026"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": true,
+    "needs_manual_review": false,
+    "review_reason": null,
+    "category": "Tax Exempt",
+    "name": "Tax Exempt Paid In Full"
+  },
+  "/Reports/UserPermissions": {
+    "path": "/Reports/UserPermissions",
+    "final_url": "https://lsscloud.com/Reports/UserPermissions",
+    "http_status": 200,
+    "reportviewer_button_found": true,
+    "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
+    "parameters": [
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl03$txtValue",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl03_txtValue",
+        "tag": "input",
+        "input_type": "text",
+        "label_guess": "User Groups",
+        "current_value": null
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_rbTrue",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "Active Users Only",
+        "current_value": "rbTrue"
+      },
+      {
+        "field_name": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl05$ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05",
+        "field_id": "ctl00_ContentPlaceHolder1_reportViewer_ctl08_ctl05_rbFalse",
+        "tag": "input",
+        "input_type": "radio",
+        "label_guess": "True",
+        "current_value": "rbFalse"
+      }
+    ],
+    "all_params_look_like_confirmed_date_pattern": false,
+    "needs_manual_review": true,
+    "review_reason": "At least one parameter isn't a plain text 'txtValue' field like the confirmed WorkOrderList date fields -- check label_guess/options by hand.",
+    "category": "Store Admin",
+    "name": "User Permissions"
+  }
+}

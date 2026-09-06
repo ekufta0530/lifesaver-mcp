@@ -4,7 +4,7 @@
       "command": "/Users/erickufta/personal_projects/lifesaver-mcp/.venv/bin/python",
       "args": ["-m", "mcp_server.server"],
       "env": {
-        "LIFESAVER_API_URL": "http://localhost:8000"
+        "MCP_TRANSPORT": "stdio"
       }
     }
   }

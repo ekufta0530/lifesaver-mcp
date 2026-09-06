@@ -3,10 +3,12 @@
 Pull SSRS "Work Order List" reports from Lifesaver Software (`lsscloud.com`) as
 structured data. Two phases (see [spec.md](spec.md)):
 
-1. **Phase 1 — API service** (`lifesaver/`): authenticates, runs the 3-step
-   ReportViewer scrape, parses the CSV, serves it over HTTP.
-2. **Phase 2 — MCP server** (`mcp_server/`): thin adapter, forwards MCP tool
-   calls to Phase 1 over HTTP.
+1. **Phase 1 — client + API** (`lifesaver/`): authenticates, runs the 3-step
+   ReportViewer scrape, parses the CSV. Usable as a library (`LifesaverClient`)
+   or a local FastAPI service.
+2. **Phase 2 — MCP server** (`mcp_server/`): exposes the report as an MCP tool,
+   over **stdio** locally or **streamable-http** when deployed (e.g. a claude.ai
+   custom connector). Calls Phase 1's client in-process. See [DEPLOY.md](DEPLOY.md).
 
 ## Layout
 
@@ -15,19 +17,23 @@ structured data. Two phases (see [spec.md](spec.md)):
 | `lifesaver/client.py` | the 3-step scrape as a class; one session, re-login + retry on expiry |
 | `lifesaver/parser.py` | CSV bytes → typed rows (BOM, `$` currency, `M/d/yyyy` dates) |
 | `lifesaver/reports.py` | per-report config (page path + date-field control IDs) |
-| `lifesaver/models.py` | pydantic response schemas (→ OpenAPI → Phase 2 tool schema) |
-| `lifesaver/api.py` | FastAPI app |
-| `mcp_server/server.py` | MCP server: one tool, `get_work_order_list_report(start_date, end_date)` |
+| `lifesaver/models.py` | pydantic row/response schemas |
+| `lifesaver/api.py` | FastAPI app (local dev; not deployed) |
+| `mcp_server/server.py` | MCP server: one tool, `get_work_order_list_report(start_date, end_date)`; stdio + streamable-http transports, bearer-token auth |
 | `lifesaver_report_pull.py` | original standalone reference script (still runnable) |
+| `Dockerfile`, `DEPLOY.md` | one-image build + Cloud Run deploy for the remote (claude.ai) setup |
+| `.github/workflows/publish.yml` | test → build → push image to `ghcr.io/<repo>` |
 | `tests/` | offline suite: fake session + saved HTML/CSV fixtures |
 
 ## Setup
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
+.venv/bin/pip install -r requirements-dev.txt   # runtime + pytest
 cp .env.example .env   # fill in LIFESAVER_USERNAME / LIFESAVER_PASSWORD
 ```
+
+(`requirements.txt` alone is the container runtime set.)
 
 ## Run the API
 
@@ -41,16 +47,29 @@ cp .env.example .env   # fill in LIFESAVER_USERNAME / LIFESAVER_PASSWORD
 
 ## Run the MCP server (Phase 2)
 
-Needs the Phase 1 API running (above). Then, for Claude Code, `.mcp.json` is
-already wired — just approve the `lifesaver` server. Or run it by hand:
+Does **not** need the Phase 1 API — it runs the scrape in-process. It just needs
+`LIFESAVER_USERNAME` / `LIFESAVER_PASSWORD` (from `.env` or the environment).
+
+**Locally (stdio).** `.mcp.json` is already wired for Claude Code — approve the
+`lifesaver` server. Or by hand:
 
 ```bash
-LIFESAVER_API_URL=http://localhost:8000 .venv/bin/python -m mcp_server.server
+.venv/bin/python -m mcp_server.server
 ```
 
-Exposes one tool: `get_work_order_list_report(start_date, end_date)` with ISO
-dates. It calls Phase 1 over HTTP and returns the parsed rows — no scraping
-logic of its own.
+**Remote (streamable-http)** — for a claude.ai custom connector:
+
+```bash
+MCP_TRANSPORT=streamable-http MCP_AUTH_TOKEN=$(openssl rand -hex 32) \
+  .venv/bin/python -m mcp_server.server
+# MCP at http://localhost:8080/mcp  (needs  Authorization: Bearer <token>)
+# health at http://localhost:8080/health
+```
+
+Deploying this to Cloud Run + GHCR: **[DEPLOY.md](DEPLOY.md)**.
+
+One tool: `get_work_order_list_report(start_date, end_date)` (ISO dates) → parsed
+work-order rows.
 
 ## Standalone script (no server)
 

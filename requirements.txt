@@ -1,14 +1,15 @@
-# Phase 1 — API service
+# Runtime deps (what the container needs).
 requests>=2.31
 beautifulsoup4>=4.12
-fastapi>=0.115
-uvicorn[standard]>=0.30
 pydantic>=2.7
 pydantic-settings>=2.3
 
-# Phase 2 — MCP server
+# MCP server + its HTTP transport
 mcp>=2.1
-httpx>=0.27
+uvicorn[standard]>=0.30
+anyio>=4.0        # used directly in mcp_server.server (also an mcp/starlette dep)
+starlette>=0.40   # JSONResponse in the auth middleware (also an mcp dep)
 
-# dev / testing
-pytest>=8.0
+# Phase 1 FastAPI app (local dev / tests; not used by the deployed MCP server)
+fastapi>=0.115
+httpx>=0.27
