@@ -28,6 +28,12 @@ ghcr.io/ekufta0530/lifesaver-mcp:sha-<commit>
 ghcr.io/ekufta0530/lifesaver-mcp:v1.2.3   # on tags
 ```
 
+The image is built for **`linux/amd64`** (Cloud Run's architecture). On an Apple
+Silicon Mac, run it locally with `--platform linux/amd64`; a native arm64 build
+hits a `cryptography` SIGILL under Docker Desktop (arm64-local only — CI and
+Cloud Run are unaffected). For local dev just run `python -m mcp_server.server`
+directly instead of the container.
+
 No secrets are baked into the image. **Make the GHCR package public** so Cloud
 Run can pull it without registry credentials:
 
