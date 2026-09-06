@@ -27,6 +27,7 @@ from datetime import date
 
 import anyio
 from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
 from mcp.server.transport_security import TransportSecuritySettings
 
 from lifesaver.client import AuthError, LifesaverClient, LifesaverError, ReportError
@@ -43,8 +44,12 @@ INSTRUCTIONS = (
 mcp = MCPServer(name="lifesaver", version="0.2.0", instructions=INSTRUCTIONS)
 
 
-class ReportUnavailable(Exception):
-    """Raised so the MCP client shows a clean message instead of a stack trace."""
+class ReportUnavailable(ToolError):
+    """Raised so the MCP client shows a clean message instead of a stack trace.
+
+    Subclasses the SDK's ToolError: its text is an *anticipated* failure and is
+    passed through to the caller (a bare Exception would be masked as a generic
+    "Error executing tool ...")."""
 
 
 # --- lsscloud.com client: one login session for the life of the process -----
