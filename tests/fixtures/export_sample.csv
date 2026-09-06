@@ -1,0 +1,53 @@
+﻿invoiceNumber,workOrderNumber,customer,lineItemNumber,description,currentStatus,retail,discount,orderDate,dateDue
+513,514.2,Nestle Purina Petcare - Deion Taylor,1,Aerial Photo w Signature Mat,OnOrder,$371.72,$30.00,8/1/2025,8/22/2025
+514,515.1,Marco Calderon,1,Head&Heart Poster,OnOrder,$184.98,$0.00,8/2/2025,8/23/2025
+515,516.1,Frances Derhammer,1,Monet's Garden ,OnOrder,$95.80,$0.00,8/2/2025,8/23/2025
+516,517.1,Frances Derhammer,1,Monet's Garden II ,OnOrder,$123.87,$30.00,8/2/2025,8/23/2025
+517,518.3,Stephanie Fredericks,1,Painting on rough paper,OnOrder,$557.21,$0.00,8/5/2025,8/26/2025
+518,519.1,Cindy Yanolko,1,Allentown fire fighter ,OnOrder,$275.42,$0.00,8/5/2025,8/19/2025
+519,520.1,Renee Kleaveland,1,House flower ,OnOrder,$445.75,$35.00,8/5/2025,8/26/2025
+520,521.2,Noreen Yamamoto,1,Doctor photo,OnOrder,$287.39,$30.00,8/5/2025,8/19/2025
+521,522.1,Renae Stonehouse,1,Weida 's Mill,OnOrder,$103.67,$20.00,8/6/2025,8/9/2025
+522,523.1,Kelly Bower,1,Bermuda Map ,OnOrder,$172.81,$0.00,8/7/2025,8/28/2025
+523,524.1,Charlotte Moser,1,world map,OnOrder,$211.83,$0.00,8/7/2025,8/28/2025
+524,525.1,Tyson Sprayberry,1,BS diploma ,OnOrder,$268.62,$0.00,8/8/2025,8/29/2025
+525,526.1,Tyson Sprayberry,1,PHD  diploma ,OnOrder,$237.12,$0.00,8/8/2025,8/29/2025
+526,527.2,Mark Tessier,1,Kid draw,OnOrder,$102.96,$20.59,8/9/2025,8/23/2025
+527,528.1,Liam McElroy,1,Frog With Human Spirit,OnOrder,$284.26,$40.00,8/9/2025,8/30/2025
+528,529.1,Ann Marie Oblas,1,Eyes ball collage ,OnOrder,$423.70,$35.00,8/13/2025,9/3/2025
+529,530.1,John Morrissey,1,UFC,OnOrder,$443.88,$0.00,8/13/2025,9/3/2025
+530,531.2,John Morrissey,1,Grand Prix,OnOrder,$299.33,$0.00,8/13/2025,9/3/2025
+531,532.4,Wendy Akarsoy,1,Family collage,OnOrder,$216.89,$30.00,8/14/2025,9/4/2025
+532,533.3,Manju Grover,1,Katie's new face,OnOrder,$289.03,$0.00,8/15/2025,9/5/2025
+533,534.2,Doug Stinner,1,Benton,OnOrder,$1444.28,$100.00,8/15/2025,9/5/2025
+534,535.3,Doug Stinner,1,Blue Benton,OnOrder,$512.94,$50.00,8/15/2025,9/5/2025
+535,536.1,Doug Stinner,1,Texture abstract ,OnOrder,$590.79,$50.00,8/15/2025,9/5/2025
+536,537.1,Susan Nastasee,1,Grapes Watercolor,OnOrder,$294.60,$30.00,8/15/2025,8/20/2025
+537,538.2,Susan Nastasee,1,Panama Canvas,OnOrder,$374.92,$60.00,8/15/2025,9/5/2025
+538,539.1,Courtney Cooper,1,wedding ,OnOrder,$275.55,$30.00,8/15/2025,9/5/2025
+539,540.2,Courtney Cooper,1,Couple wedding in Phily,OnOrder,$437.25,$30.00,8/15/2025,9/5/2025
+540,541.1,Charlie Barebo,1,Man portrait  2020,OnOrder,$298.53,$30.00,8/16/2025,9/6/2025
+541,542.3,Miike Woodland,1,Naz frame,OnOrder,$580.56,$0.00,8/16/2025,9/6/2025
+542,543.2,Cindy Yanolko,1,Hess Brothers Tea Room,OnOrder,$118.38,$35.00,8/16/2025,8/30/2025
+543,544.2,Gene Badman,1,Magazine Cutouts,OnOrder,$217.82,$0.00,8/16/2025,9/6/2025
+544,545.1,Bill McGlinn,1,lily pond ,OnOrder,$748.70,$35.00,8/16/2025,9/6/2025
+545,546.1,Andrew Bacalakis,1,dots art ,OnOrder,$187.55,$35.00,8/16/2025,9/6/2025
+546,547.2,Timothy Lansky,1,Window sticker,OnOrder,$289.18,$55.00,8/19/2025,9/9/2025
+547,548.2,Charles Lavis,1,World War ii photo,OnOrder,$232.97,$30.00,8/21/2025,9/11/2025
+548,549.1,Luanna Marshall,1,Bike ,OnOrder,$245.56,$30.00,8/21/2025,9/11/2025
+549,550.5,Richard Palmer,1,4th generation,Void,$423.01,$30.00,8/23/2025,9/13/2025
+550,551.1,Richard Palmer,1,4th generations,OnOrder,$392.12,$30.00,8/23/2025,9/13/2025
+551,552.1,Diane Kocsis,1,Three girls ,OnOrder,$153.72,$30.00,8/26/2025,9/9/2025
+552,553.1,Martin Clark,1,Nash,OnOrder,$375.77,$30.00,8/27/2025,9/17/2025
+553,554.2,Jen Makowe,1,NY  City,OnOrder,$832.39,$50.00,8/27/2025,9/17/2025
+554,555.1,Lori Horosky,1,Bears ,OnOrder,$287.29,$35.00,8/28/2025,9/18/2025
+555,556.2,Jordan McClintock,1,Japan animate,OnOrder,$367.54,$60.00,8/28/2025,9/5/2025
+556,557.1,Alex Gomez,1,Man army ,OnOrder,$204.88,$30.00,8/29/2025,9/19/2025
+557,558.1,Joanne Burtaine,1,Mack truck,OnOrder,$189.11,$30.00,8/29/2025,9/19/2025
+558,559.1,Joanne Burtaine,1,Beach scene ,OnOrder,$160.42,$30.00,8/29/2025,9/19/2025
+559,560.1,Joanne Burtaine,1,Mongoose ,OnOrder,$185.78,$30.00,8/29/2025,9/19/2025
+560,561.1,Katherine Yanushefski,1,Farm House water color,OnOrder,$257.14,$0.00,8/30/2025,9/13/2025
+561,562.2,John Kukitz,1,statue,OnOrder,$626.62,$30.00,8/30/2025,9/12/2025
+562,563.3,John Kukitz,1,The wall,OnOrder,$296.91,$30.00,8/30/2025,9/12/2025
+563,564.2,John Kukitz,1,Nurse statue,OnOrder,$633.35,$30.00,8/30/2025,9/12/2025
+

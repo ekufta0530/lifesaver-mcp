@@ -1,0 +1,14 @@
+# Phase 1 — API service
+requests>=2.31
+beautifulsoup4>=4.12
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic>=2.7
+pydantic-settings>=2.3
+
+# Phase 2 — MCP server
+mcp>=2.1
+httpx>=0.27
+
+# dev / testing
+pytest>=8.0
