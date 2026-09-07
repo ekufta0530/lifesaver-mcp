@@ -9,6 +9,10 @@ __pycache__
 *.csv
 !tests/fixtures/*.csv
 tests
+*.db
+*.db-wal
+*.db-shm
+warehouse_raw
 scripts
 report_manifest.json
 *.md

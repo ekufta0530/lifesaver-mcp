@@ -17,6 +17,12 @@ Phase 1 must work standalone and be testable on its own before Phase 2 wraps it.
 Approval to programmatically access this report has already been obtained from
 Lifesaver Software.
 
+**Phase 3 — retention KPI dashboard.** Accumulate work-order history into a local
+warehouse (solving both the 36-month source-retention limit and the fact that the
+KPIs need full per-customer history) and serve five retention KPIs. Backend built
+in `warehouse/` (SQLite; see `warehouse/README.md`). Design and open questions:
+`dashboard/DESIGN.md`.
+
 ## Background / how the target system works
 
 Lifesaver's report page is **not** a REST API — it's a classic ASP.NET Web Forms

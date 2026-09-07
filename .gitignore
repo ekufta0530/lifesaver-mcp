@@ -4,3 +4,16 @@ __pycache__/
 *.pyc
 *.csv
 !tests/fixtures/*.csv
+
+# warehouse (Phase 3): local data, never committed
+warehouse.db
+warehouse.db-wal
+warehouse.db-shm
+warehouse_raw/
+*.db
+*.db-wal
+*.db-shm
+
+# generated dashboard
+dashboard/index.html
+dashboard/data.json
