@@ -810,7 +810,7 @@ APP_JS = r"""
   }
 
   // ---- monthly performance vs last year (standalone, not period-scoped) ----
-  var yoyMode = 'calendar', yoyEx = false;
+  var yoyMode = 'trailing', yoyEx = false;
 
   function renderYoY(){
     var host = document.getElementById('yoy');

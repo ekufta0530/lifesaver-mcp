@@ -404,7 +404,7 @@ without touching them.
     **monthly performance vs. last year** table near the top: one row per month
     (`Month | prior-yr revenue | this-yr revenue | Δ% | prior-yr orders |
     this-yr orders | Δ% | avg ticket this yr + Δ%`), a `YTD` / `Trailing 12 mo`
-    total row, a **Calendar year / Trailing 12 months** toggle, and an
+    total row, a **Trailing 12 months** (default) / **Calendar year** toggle, and an
     **Exclude the Polaris Mission** checkbox. The current month's row is
     month-to-date vs the same run of days a year earlier (reuses the existing
     `partial_ly_*` fields). The table renders fully client-side; `build.load()`
