@@ -305,7 +305,7 @@ def render(data: dict) -> str:
       <li><b>Revenue is retail minus discount</b>, booked to the order date. Voided orders are excluded from every figure; a same-day re-do keeps only the corrected order.</li>
       <li><b>Year-over-year on the live month</b> compares only the same run of days a year earlier, so a part-month isn't measured against a whole one. "On pace" is the month-to-date rate carried to month end.</li>
       <li><b>Monthly performance vs. last year</b> lines each month up against the same month a year earlier — revenue, order count, and average ticket. Completed months use the full month; the current month is month-to-date against the same run of days last year. Toggle between the calendar year so far and a rolling 12 months.</li>
-      <li><b>The Polaris Mission toggle.</b> In Oct–Nov 2024 the store took two commissions for a SpaceX program (~$39.5k net combined, roughly ten normal tickets). Left in, they make any comparison reaching back to late 2024 look like a sharp drop even though the order <i>count</i> is flat. The toggle removes just those two orders from the revenue and average-ticket figures in this section; retention figures are unaffected.</li>
+      <li><b>The Polaris Mission toggle.</b> In Oct–Nov 2024 the store took two commissions for a SpaceX program (~$39.5k net combined, roughly ten normal tickets). Left in, they make any comparison reaching back to late 2024 look like a sharp drop even though the order <i>count</i> is flat. The toggle removes just those two orders from the last-year revenue and average-ticket figures — it only touches the Oct and Nov rows, so it shows its effect in the trailing-12-months view (checking it there switches you to that view). Retention figures are unaffected.</li>
       <li><b>Cohort metrics</b> (first&nbsp;&rarr;&nbsp;second, median days) use the 12 monthly cohorts that matured a year before the report month, so the sample is stable.</li>
       <li><b>Live vs closed.</b> The current month and quarter update with each daily data pull. Once a period closes its figures are frozen — pick it from the dropdown to see the report as it stood.</li>
       <li><b>Complete history.</b> Invoice&nbsp;#1 is a May&nbsp;2024 test order — there is no earlier data to be missing, so cohorts are unbiased.</li>
@@ -529,6 +529,9 @@ tbody th{text-align:left;font-weight:500;color:var(--muted)}
   border:1px solid currentColor;border-radius:3px;padding:0 3px;margin-left:6px;vertical-align:1px}
 .yoytable tr.tot th,.yoytable tr.tot td{border-top:2px solid var(--ink);border-bottom:0;
   font-weight:600;font-family:var(--serif)}
+.yoytable tr.aff td,.yoytable tr.aff th{background:var(--wash)}
+.yoytable .exmark{font-size:8.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--watch);margin-left:6px;vertical-align:1px}
 
 .colophon{margin-top:30px;padding-top:16px;border-top:1px solid var(--hair);
   font-size:11px;color:var(--muted);letter-spacing:.02em}
@@ -820,14 +823,20 @@ APP_JS = r"""
     var start = yoyMode==='calendar' ? CUR_YR+'-01' : addM(CUR,-11);
     var months = []; for(var m=start; m<=CUR; m=addM(m,1)) months.push(m);
 
-    var tot = {cyR:0, cyV:0, pyR:0, pyV:0};
+    var ex = B.outlier || {}, hasEx = ex.total_v > 0;
+    var exMonths = ex.months || [];
+    function isOut(m){ return exMonths.indexOf(m) >= 0; }
+
+    var tot = {cyR:0, cyV:0, pyR:0, pyV:0}, anyAff = false;
     var rows = months.map(function(cm){
       var pm = addM(cm,-12), part = cm===PARTIAL;
       var cyR = r(cm), cyV = vv(cm);
       var pyR = part ? (yoyEx ? B.partial_ly_rev_ex : B.partial_ly_rev) : r(pm);
       var pyV = part ? (yoyEx ? B.partial_ly_v_ex   : B.partial_ly_v)   : vv(pm);
+      var aff = yoyEx && (isOut(cm) || isOut(pm));
+      if(aff) anyAff = true;
       tot.cyR+=cyR; tot.cyV+=cyV; tot.pyR+=pyR; tot.pyV+=pyV;
-      return {cm:cm, part:part, cyR:cyR, cyV:cyV, pyR:pyR, pyV:pyV};
+      return {cm:cm, part:part, cyR:cyR, cyV:cyV, pyR:pyR, pyV:pyV, aff:aff};
     });
 
     function dcell(d){ return '<td class="'+relCls(d)+'">'+pctTxt(d)+'</td>'; }
@@ -841,20 +850,28 @@ APP_JS = r"""
     var body = rows.map(function(x){
       var lbl = MN[+x.cm.split('-')[1]-1].slice(0,3) +
         (yoyMode==='trailing' ? ' ’'+x.cm.slice(2,4) : '') +
-        (x.part ? '<span class="mtd">MTD</span>' : '');
-      return line(lbl, x, x.part ? 'live' : '');
+        (x.part ? '<span class="mtd">MTD</span>' : '') +
+        (x.aff ? '<span class="exmark" title="'+esc(ex.label)+' removed">outlier removed</span>' : '');
+      return line(lbl, x, (x.part ? 'live' : '') + (x.aff ? ' aff' : ''));
     }).join('');
     body += line(yoyMode==='calendar' ? CUR_YR+' YTD' : 'Trailing 12 mo', tot, 'tot');
 
-    var ex = B.outlier || {}, hasEx = ex.total_v > 0;
     var exNote = hasEx ? '<label class="chk"><input type="checkbox" id="yoyEx"'+(yoyEx?' checked':'')+'> '+
       'Exclude the '+esc(ex.label)+' <span class="since">('+usdFull(ex.total_rev)+' over '+
-      ex.total_v+' orders, '+ex.months.map(ml).join(' &amp; ')+')</span></label>' : '';
+      ex.total_v+' orders, '+exMonths.map(ml).join(' &amp; ')+')</span></label>' : '';
 
-    var footNote = rows.some(function(x){return x.part;})
-      ? '<p class="foot">MTD: through '+mDay(PARTIAL,B.partial_day)+', measured against '+
-        mname(addM(PARTIAL,-12)).slice(0,3)+' 1–'+B.partial_day+', '+addM(PARTIAL,-12).slice(0,4)+'.</p>'
-      : '';
+    var notes = [];
+    if(rows.some(function(x){return x.part;}))
+      notes.push('MTD: through '+mDay(PARTIAL,B.partial_day)+', measured against '+
+        mname(addM(PARTIAL,-12)).slice(0,3)+' 1–'+B.partial_day+', '+addM(PARTIAL,-12).slice(0,4)+'.');
+    if(yoyEx && hasEx && anyAff)
+      notes.push(exMonths.map(function(m){
+        return '−'+usdFull((B.outlier.monthly[m]||{}).rev||0)+' ('+ml(m)+')'; }).join(', ')+
+        ' removed from last-year revenue.');
+    else if(yoyEx && hasEx && !anyAff)
+      notes.push('The '+esc(ex.label)+' lands in '+exMonths.map(ml).join(' &amp; ')+
+        ', outside this view — it only moves the Trailing 12 months comparison.');
+    var footNote = notes.map(function(t){ return '<p class="foot">'+t+'</p>'; }).join('');
 
     host.innerHTML =
       '<figure class="card wide yoycard">'+
@@ -882,7 +899,16 @@ APP_JS = r"""
       b.addEventListener('click', function(){ yoyMode = b.dataset.m; renderYoY(); });
     });
     var box = document.getElementById('yoyEx');
-    if(box) box.addEventListener('change', function(){ yoyEx = box.checked; renderYoY(); });
+    if(box) box.addEventListener('change', function(){
+      yoyEx = box.checked;
+      // the outlier only falls in the trailing-12 window; if the user turns the
+      // exclusion on from the calendar view (where it changes nothing), move
+      // them to the view where it actually does something.
+      if(yoyEx && yoyMode==='calendar' &&
+         !months.some(function(m){ return isOut(m) || isOut(addM(m,-12)); }))
+        yoyMode = 'trailing';
+      renderYoY();
+    });
   }
 
   // ---- render ----
