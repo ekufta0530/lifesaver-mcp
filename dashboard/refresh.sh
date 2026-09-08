@@ -27,14 +27,8 @@ echo "==> sync new work-order data + recompute KPIs"
 python -m warehouse.job sync
 python -m warehouse.job status
 
-echo "==> rebuild dashboard"
-python -m dashboard.build --json dashboard/data.json
-
-echo "==> publish site to gs://$SITE_BUCKET"
-gcloud storage cp dashboard/index.html "gs://$SITE_BUCKET/index.html" \
-  --content-type=text/html --cache-control="public, max-age=300"
-gcloud storage cp dashboard/data.json "gs://$SITE_BUCKET/data.json" \
-  --content-type=application/json --cache-control="public, max-age=300"
+echo "==> rebuild + publish dashboard"
+dashboard/publish.sh
 
 echo "==> push warehouse back to gs://$WAREHOUSE_BUCKET"
 gcloud storage cp warehouse.db "gs://$WAREHOUSE_BUCKET/warehouse.db"

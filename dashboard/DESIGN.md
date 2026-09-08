@@ -389,6 +389,10 @@ without touching them.
     from the `visits` table (same revenue basis as the KPIs), so no schema
     change.
 12. **Daily auto-refresh** — see §15. Needs step 8 (persistent warehouse) first.
+    *Partly done (2026-09-07):* dashboard **code** deploys are automated — a push
+    to `main` re-renders `index.html` from the GCS warehouse and re-uploads it
+    (`.github/workflows/publish.yml` → `deploy-dashboard` → `dashboard/publish.sh`).
+    The scheduled **data** pull is still open.
 13. Fuzzy identity — only if §12 #5 finds enough near-duplicate names to matter.
 
 ## 15. Daily refresh
@@ -405,9 +409,13 @@ stays frozen (the warehouse's `is_final` flag guarantees it).
     the system of record; the local copy is a working copy.
   - `gs://lifesaver-kpi-dashboard-303f74` — static site
     (`mainPageSuffix: index.html`). `index.html` + `data.json` uploaded.
+- **`dashboard/publish.sh`** — build + upload only: `dashboard.build --json` →
+  upload `index.html` + `data.json` to the site bucket. No LifeSaver login, no
+  KPI recompute; renders from whatever is in the local `warehouse.db`. Called by
+  both `refresh.sh` and the `deploy-dashboard` CI job.
 - **`dashboard/refresh.sh`** — the full cycle: pull db from GCS → `warehouse.job
-  sync` → `dashboard.build --json` → upload site → push db + raw back. Runs
-  locally (gcloud auth + LIFESAVER creds) and is what the scheduled job will run.
+  sync` → `dashboard/publish.sh` → push db + raw back. Runs locally (gcloud auth
+  + LIFESAVER creds) and is what the scheduled job will run.
 
 ### Still to do
 
@@ -415,12 +423,14 @@ stays frozen (the warehouse's `is_final` flag guarantees it).
    decision on exposure (the dashboard carries customer counts and lifetime
    revenue). Either `allUsers:objectViewer` on the bucket (anyone with the URL),
    or put it behind auth (IAP + load balancer, or Firebase with sign-in).
-2. **Schedule it.** A Cloud Run Job running `refresh.sh` on a daily Cloud
-   Scheduler trigger (`cloudscheduler.googleapis.com` not yet enabled). Needs an
-   image with the warehouse + dashboard code + gcloud + LIFESAVER creds from
-   Secret Manager, and a service account with objectAdmin on both buckets.
-   Decide: extend the existing Dockerfile (multi-entrypoint) or a small separate
-   image.
+2. **Schedule the data pull.** Dashboard *code* deploys are now automated on
+   push to `main` (`.github/workflows/publish.yml` → `deploy-dashboard`), but
+   the daily LifeSaver pull / KPI recompute is not. Options: a Cloud Run Job
+   running `refresh.sh` on a daily Cloud Scheduler trigger
+   (`cloudscheduler.googleapis.com` not yet enabled; needs an image with the
+   warehouse + dashboard code + gcloud + LIFESAVER creds from Secret Manager and
+   a service account with objectAdmin on both buckets), or a scheduled GitHub
+   Actions workflow with the LIFESAVER creds as repo secrets.
 3. **LifeSaver single-session** — the job and the deployed MCP server both log
    in. Low collision risk for now (MCP is min-instances=0, on-demand; the job
    runs at a fixed early hour). Clean fix is model A (§9).

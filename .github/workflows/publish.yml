@@ -1,4 +1,4 @@
-name: publish image
+name: build & deploy
 
 on:
   push:
@@ -55,3 +55,62 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  # ---- deploy: push to main -> update the live surfaces --------------------
+  # Both jobs authenticate to GCP with Workload Identity Federation (keyless);
+  # one-time setup + the GCP_WIF_PROVIDER / GCP_DEPLOY_SA repo variables are in
+  # DEPLOY.md.
+
+  deploy-mcp:
+    needs: build-push
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+      - uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: mcps-507817
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run services update lifesaver-mcp \
+            --region=us-central1 \
+            --image=${{ env.IMAGE }}:latest
+      - name: Smoke-check /health
+        run: |
+          URL=$(gcloud run services describe lifesaver-mcp \
+            --region=us-central1 --format='value(status.url)')
+          curl -sf "$URL/health"
+
+  deploy-dashboard:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      SITE_BUCKET: lifesaver-kpi-dashboard-303f74
+      WAREHOUSE_BUCKET: lifesaver-kpi-warehouse
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+      - uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: mcps-507817
+      - name: Rebuild + publish dashboard
+        run: |
+          gcloud storage cp "gs://$WAREHOUSE_BUCKET/warehouse.db" warehouse.db
+          bash dashboard/publish.sh

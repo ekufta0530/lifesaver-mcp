@@ -110,7 +110,8 @@ gcloud run deploy lifesaver-mcp \
   `--set-env-vars=MCP_ALLOWED_HOSTS=lifesaver-mcp-xxxx-uc.a.run.app` to turn on
   DNS-rebinding protection (Host/Origin allow-list).
 
-Redeploy after a new image build:
+Redeploy after a new image build — **this is automatic on every push to `main`**
+(see [§6 CI/CD](#6-cicd--push-to-main)). To redeploy by hand:
 
 ```bash
 gcloud run services update lifesaver-mcp --region=us-central1 \
@@ -149,6 +150,86 @@ Settings → Connectors → **Add custom connector**:
   (not built — see spec.md).
 
 Once connected, the `get_work_order_list_report` tool is available in chats.
+
+---
+
+## 6. CI/CD — push to `main`
+
+`.github/workflows/publish.yml` runs on every push to `main`:
+
+| Job | Trigger | Effect |
+|---|---|---|
+| `test` | always | `pytest -q` |
+| `build-push` | always | build + push image to GHCR (`latest`, `sha-<commit>`) |
+| `deploy-mcp` | push to `main` | `gcloud run services update lifesaver-mcp --image=…:latest`, then curls `/health` |
+| `deploy-dashboard` | push to `main` | pull `warehouse.db` from GCS → `dashboard/build.py` → upload `index.html` + `data.json` to the site bucket (`dashboard/publish.sh`) |
+
+`deploy-dashboard` is a **code** refresh only — it re-renders the page from
+whatever data is already in `warehouse.db`. The daily LifeSaver pull / KPI
+recompute (`dashboard/refresh.sh` full cycle) is **not** automated here; it still
+runs by hand (future: a scheduled Cloud Run Job, DESIGN.md §15).
+
+### One-time setup: Workload Identity Federation
+
+The deploy jobs authenticate to GCP keylessly. Create a deploy service account
+and let this repo impersonate it:
+
+```bash
+PROJECT=mcps-507817
+PROJNUM=$(gcloud projects describe $PROJECT --format='value(projectNumber)')
+REPO=ekufta0530/lifesaver-mcp
+SA=gha-deployer@$PROJECT.iam.gserviceaccount.com
+
+gcloud iam service-accounts create gha-deployer \
+  --display-name="GitHub Actions deployer" --project=$PROJECT
+
+# Cloud Run: update the service + act as its runtime SA
+gcloud run services add-iam-policy-binding lifesaver-mcp --region=us-central1 \
+  --member="serviceAccount:$SA" --role=roles/run.admin
+gcloud iam service-accounts add-iam-policy-binding \
+  ${PROJNUM}-compute@developer.gserviceaccount.com \
+  --member="serviceAccount:$SA" --role=roles/iam.serviceAccountUser
+
+# Dashboard: read the warehouse bucket, write the site bucket
+gcloud storage buckets add-iam-policy-binding gs://lifesaver-kpi-warehouse \
+  --member="serviceAccount:$SA" --role=roles/storage.objectViewer
+gcloud storage buckets add-iam-policy-binding gs://lifesaver-kpi-dashboard-303f74 \
+  --member="serviceAccount:$SA" --role=roles/storage.objectAdmin
+
+# WIF pool + provider, locked to this repo
+gcloud iam workload-identity-pools create github --location=global \
+  --display-name="GitHub Actions"
+gcloud iam workload-identity-pools providers create-oidc github \
+  --location=global --workload-identity-pool=github --display-name="GitHub" \
+  --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository" \
+  --attribute-condition="assertion.repository=='${REPO}'" \
+  --issuer-uri="https://token.actions.githubusercontent.com"
+
+POOL=$(gcloud iam workload-identity-pools describe github --location=global --format='value(name)')
+gcloud iam service-accounts add-iam-policy-binding $SA \
+  --role=roles/iam.workloadIdentityUser \
+  --member="principalSet://iam.googleapis.com/${POOL}/attribute.repository/${REPO}"
+
+# the provider resource name -> paste into GitHub as GCP_WIF_PROVIDER
+gcloud iam workload-identity-pools providers describe github --location=global \
+  --workload-identity-pool=github --format='value(name)'
+```
+
+Then in GitHub → repo → **Settings → Secrets and variables → Actions →
+Variables**:
+
+- `GCP_WIF_PROVIDER` — the provider resource name printed above
+  (`projects/<num>/locations/global/workloadIdentityPools/github/providers/github`)
+- `GCP_DEPLOY_SA` — `gha-deployer@mcps-507817.iam.gserviceaccount.com`
+
+### Rollback
+
+Re-run an earlier successful workflow, or pin to an older image:
+
+```bash
+gcloud run services update lifesaver-mcp --region=us-central1 \
+  --image=ghcr.io/ekufta0530/lifesaver-mcp:sha-<older-commit>
+```
 
 ---
 
