@@ -1,7 +1,16 @@
-# Retention KPI Dashboard — Backend Design
+# Frame Shop Performance Dashboard — Backend Design
 
-Status: **draft** (2026-09-07). Phase 3 of the project. Phases 1–2 (report puller +
-MCP server) are in `spec.md` and deployed.
+Status: **built** (backend + dashboard, 2026-09-07). Phase 3 of the project;
+Phases 1–2 (report puller + MCP server) are in `spec.md` and deployed. The
+pipeline and dashboard run locally and the dashboard auto-publishes on push to
+`main`; the remaining open items are the scheduled data pull and production
+persistence (§12 #6, §15). Per-section status is inline below ("Built:",
+strikethroughs) and summarised in §13–14.
+
+> Renamed 2026-09-08 from "Retention KPI Dashboard" — the page now leads with
+> business performance (revenue, a monthly year-over-year table, average ticket)
+> and keeps customer retention as one section below. Page title: **Frame Shop
+> Performance**.
 
 ## 1. Purpose
 
@@ -340,13 +349,16 @@ warehouse/          Phase 3 backend
   job.py            CLI: status | backfill | sync | resolve | rebuild | snapshot | kpis | review
 dashboard/
   DESIGN.md         this doc
-  build.py          reads the warehouse -> self-contained index.html
+  build.py          reads the warehouse -> self-contained index.html (+ data.json)
+  publish.sh        build + upload index.html/data.json to the GCS site bucket
+  refresh.sh        full daily cycle: pull db from GCS -> job sync -> publish -> push back
   index.html        generated dashboard (gitignored)
 tests/              test_warehouse_*.py  (48 tests)
 ```
 
 Dependency direction: `warehouse/` imports `LifesaverClient` + `parse_work_order_csv`
-from `lifesaver/`. Nothing imports `warehouse/` yet. One way, no cycles.
+from `lifesaver/`; `dashboard/build.py` imports `warehouse.models.CALC_VERSION`
+and otherwise reads `warehouse.db` directly. One way, no cycles.
 
 All analytics (`identity`, `visits`, `kpis`) are pure functions over dataclasses —
 no I/O, no SQL — so they are fully unit-tested and the storage engine can change
@@ -388,6 +400,21 @@ without touching them.
     month-to-date with an on-pace projection and a same-days-last-year YoY. Built
     from the `visits` table (same revenue basis as the KPIs), so no schema
     change.
+    **v4 (2026-09-08):** renamed to **Frame Shop Performance**. Added a
+    **monthly performance vs. last year** table near the top: one row per month
+    (`Month | prior-yr revenue | this-yr revenue | Δ% | prior-yr orders |
+    this-yr orders | Δ% | avg ticket this yr + Δ%`), a `YTD` / `Trailing 12 mo`
+    total row, a **Calendar year / Trailing 12 months** toggle, and an
+    **Exclude the Polaris Mission** checkbox. The current month's row is
+    month-to-date vs the same run of days a year earlier (reuses the existing
+    `partial_ly_*` fields). The table renders fully client-side; `build.load()`
+    ships `business.outlier` (per-month rev/order contribution of the two
+    `OUTLIER_VISIT_IDS`) plus `partial_ly_{rev,v}_ex`, so the toggle needs no
+    rebuild. The Polaris Mission = customer `c781adfa3958` ("Casey Phillips" /
+    "The Polaris Mission"), two Oct–Nov 2024 commissions for a SpaceX program,
+    ~$39.5k net — it only moves comparisons whose prior-year month is Oct or
+    Nov 2024 (the trailing-12 view); toggle scope is the business section only,
+    retention KPIs untouched.
 12. **Daily auto-refresh** — see §15. Needs step 8 (persistent warehouse) first.
     *Partly done (2026-09-07):* dashboard **code** deploys are automated — a push
     to `main` re-renders `index.html` from the GCS warehouse and re-uploads it

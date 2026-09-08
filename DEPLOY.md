@@ -147,7 +147,7 @@ Settings → Connectors → **Add custom connector**:
 - **Authentication:** the connector needs to send `Authorization: Bearer <token>`
   using the `mcp-auth-token` value. If the UI only offers OAuth, use the
   "custom headers" option; otherwise this server would need an OAuth front end
-  (not built — see spec.md).
+  (not built).
 
 Once connected, the `get_work_order_list_report` tool is available in chats.
 
@@ -179,6 +179,10 @@ PROJECT=mcps-507817
 PROJNUM=$(gcloud projects describe $PROJECT --format='value(projectNumber)')
 REPO=ekufta0530/lifesaver-mcp
 SA=gha-deployer@$PROJECT.iam.gserviceaccount.com
+
+# WIF with a service_account uses impersonation -> this API must be on, or the
+# deploy jobs fail with "IAM Service Account Credentials API has not been used".
+gcloud services enable iamcredentials.googleapis.com --project=$PROJECT
 
 gcloud iam service-accounts create gha-deployer \
   --display-name="GitHub Actions deployer" --project=$PROJECT

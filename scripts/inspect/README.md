@@ -1,71 +1,50 @@
-# Lifesaver Software (lsscloud.com) report tooling
+# Report-page recon — `inspect_report.py`
 
-Two scripts, meant to be run from the same folder:
+**Status: parked.** This was a one-off reconnaissance pass over the other report
+pages in `lsscloud.com`, done while deciding whether the puller could be
+generalized beyond `WorkOrderList`. The answer was no — every other report
+exports SSRS visual-layout internals (textbox names, chart series, gauge needle
+positions), not data. See **[spec.md](../../spec.md) → "Report coverage"** for
+the findings and, if the other reports' data is ever actually needed, the ATOM
+data-feed renderer as the path forward (it does not use this script).
 
-| Script | Purpose |
-|---|---|
-| `lifesaver_report_pull.py` | Pulls one report (currently `WorkOrderList`) to CSV for a given date range. **Unchanged in this pass.** |
-| `inspect_report.py` | Discovers what parameter fields a report page actually has, so the rest of the 51-report catalog can be added without guessing field names one at a time. |
+The script and its output ([`report_manifest.json`](../../report_manifest.json)
+at the repo root) are kept only as reference for the per-report parameter-field
+layouts. Nothing in the codebase imports either.
 
-Both talk to `https://lsscloud.com`, a classic ASP.NET Web Forms app with a Microsoft SSRS ReportViewer control embedded per report page, wrapped in a thin MVC login shell. See `spec.md` for the full background on how that flow works (login → get page → postback → scrape ReportSession/ControlID → export).
+## What it does
 
-## Setup
+For a report page, `inspect_report.py` works out — without submitting anything or
+exporting — :
+- whether it's a standard ReportViewer parameter page (looks for the
+  `ctl08$ctl00` "View Report" button, constant across the app),
+- what parameter fields it has, in order, with field name/id/type,
+- a best-guess label per field (nearest preceding visible text),
+- whether each field matches the confirmed `WorkOrderList` shape (plain text
+  `txtValue`) or is something else (dropdown, checkbox, …) needing a human.
 
-```
-pip install requests beautifulsoup4
-export LIFESAVER_USERNAME=...
-export LIFESAVER_PASSWORD=...
-```
+One GET per report, just the initially-rendered parameter panel.
 
-Both scripts read credentials from those two environment variables — never pass them on the command line or commit them anywhere.
+## Running it
 
-## `lifesaver_report_pull.py`
+It imports `lifesaver_report_pull` for the login flow, so run it **from the repo
+root**, not this folder:
 
-Pulls the Work Order List report to a CSV file.
+```bash
+export LIFESAVER_USERNAME=... LIFESAVER_PASSWORD=...
 
-```
-python lifesaver_report_pull.py --start 7/1/2025 --end 9/1/2026 --out workorderlist.csv
-```
-
-- `--start` / `--end`: dates in `M/d/yyyy`, no zero-padding (e.g. `7/1/2025`, not `07/01/2025`) — this is the exact format the live date-picker textbox uses.
-- `--out`: output CSV path (default `workorderlist.csv`).
-- `--report-url`: override the report page URL if you want to point `pull_report()` at a different `/Reports/<X>` page — works today only if that report happens to share WorkOrderList's exact field layout (two plain date textboxes at `ctl08$ctl03`/`ctl08$ctl05`). Most reports in the catalog probably don't — that's what `inspect_report.py` is for.
-
-## `inspect_report.py`
-
-Read-only reconnaissance tool. For a given report page, it works out:
-- whether it's a standard ReportViewer parameter page at all (looks for the `ctl08$ctl00` "View Report" button, confirmed constant across the app),
-- what parameter fields it has, in what order, with what field name/id/type,
-- a best-guess label for each field (by reading the visible text immediately before it in the page, same as a person would),
-- whether that field matches the *confirmed* WorkOrderList shape (plain text `txtValue`) or looks different (dropdown, checkbox, something else) and so needs a human to look at it.
-
-It never submits a date range or exports anything — one GET per report, just to see the parameter panel as initially rendered.
-
-### Commands
-
-```
-# sanity-check the catalog with no network requests
-python inspect_report.py --list
-
-# confirm the tool against the one report we already know, before trusting it on the rest
-python inspect_report.py --only WorkOrderList
-
-# try a handful (comma-separated path or name substrings, case-insensitive)
-python inspect_report.py --only "employee sales,PaymentSummary,Salesperson"
-
-# the full 51-report sweep
-python inspect_report.py
-
-# resume a previous run without re-fetching what's already in the manifest
-python inspect_report.py --skip-existing
-
-# be gentler/rougher on the server (default 1.5s between requests)
-python inspect_report.py --delay 3
+python scripts/inspect/inspect_report.py --list                  # catalog only, no network
+python scripts/inspect/inspect_report.py --only WorkOrderList     # check against the known report
+python scripts/inspect/inspect_report.py --only "employee sales,PaymentSummary"
+python scripts/inspect/inspect_report.py                          # full sweep
+python scripts/inspect/inspect_report.py --skip-existing          # resume from the manifest
+python scripts/inspect/inspect_report.py --delay 3                # seconds between requests (default 1.5)
 ```
 
-### Output: `report_manifest.json`
+## Output: `report_manifest.json`
 
-One entry per report path, written after every single report (not just at the end), so a crash or Ctrl-C never loses progress and `--skip-existing` can pick up where you left off. Each entry looks like:
+One entry per report path, written after each report so a crash never loses
+progress. Each entry:
 
 ```json
 {
@@ -73,7 +52,6 @@ One entry per report path, written after every single report (not just at the en
     "path": "/Reports/WorkOrderList",
     "category": "Work Orders",
     "name": "Work Order List",
-    "final_url": "https://lsscloud.com/Reports/WorkOrderList",
     "http_status": 200,
     "reportviewer_button_found": true,
     "submit_button_field": "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00",
@@ -85,8 +63,7 @@ One entry per report path, written after every single report (not just at the en
         "input_type": "text",
         "label_guess": "Start Date",
         "current_value": "9/1/2025"
-      },
-      { "...End Date field..." : "..." }
+      }
     ],
     "all_params_look_like_confirmed_date_pattern": true,
     "needs_manual_review": false,
@@ -95,15 +72,14 @@ One entry per report path, written after every single report (not just at the en
 }
 ```
 
-**`needs_manual_review: true`** is the field to filter on when deciding what to look at by hand. It gets set when:
-- no `ctl08$ctl00` button was found at all (page may not be a ReportViewer page the same way — expected for the two `/Reporting/`-prefixed URLs in the catalog, `LifeSaverPaymentsPayoutReport` and `ReprintInvoice`),
-- a button was found but it has zero parameter fields underneath it (report may take no parameters), or
-- at least one parameter isn't a plain-text `txtValue` field like the confirmed date fields (a dropdown, checkbox, or anything else) — `review_reason` says which.
+`needs_manual_review: true` is the field to filter on. It gets set when: no
+`ctl08$ctl00` button was found (e.g. the two `/Reporting/`-prefixed URLs), a
+button was found with zero parameter fields under it, or at least one parameter
+isn't a plain-text `txtValue` field (`review_reason` says which).
 
-When `reportviewer_button_found` is `false`, check `all_reportviewer_fields_on_page` in that entry — it's every `ctl00$...$reportViewer$...` field found anywhere on the page as a raw fallback, in case the container-detection heuristic (climbing from the button to its `ctl08` parent) missed something rather than the page genuinely lacking a ReportViewer control.
+## Caveats
 
-### What this doesn't do (yet)
-
-- Doesn't fill in a date range or hit the export endpoint — it only reads the page's *initial* rendered state, so a report whose parameter panel changes shape after an interaction (rare, but possible) wouldn't be fully captured.
-- `label_guess` is exactly that — a heuristic based on nearest preceding visible text. It matched the known WorkOrderList labels correctly in testing, but should be spot-checked per report, especially any flagged `needs_manual_review`.
-- Doesn't yet turn `report_manifest.json` into the config `lifesaver_report_pull.py` would consume to generalize `pull_report()` across all 51 reports — that's the next step once the manifest is reviewed.
+- Reads only the *initial* rendered state — a panel that changes shape after an
+  interaction wouldn't be fully captured.
+- `label_guess` is a heuristic (nearest preceding text). It matched the known
+  `WorkOrderList` labels in testing; spot-check per report.

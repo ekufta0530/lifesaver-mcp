@@ -2,26 +2,26 @@
 
 ## Goal
 
-Two-phase build:
+Three-phase build:
 
 1. **Phase 1 — API service.** A small service that programmatically authenticates
    to Lifesaver Software's `lsscloud.com` (a Microsoft ReportViewer / SSRS-backed
    ASP.NET Web Forms app), pulls the `WorkOrderList` report for an arbitrary date
    range, and returns it as clean structured data (CSV parsed into JSON, or raw
    CSV) via a simple internal HTTP API.
-2. **Phase 2 — MCP server.** Wrap Phase 1's API as an MCP server so the report can
-   be queried directly from Claude (e.g. "pull last month's work order list from
-   Lifesaver").
+2. **Phase 2 — MCP server.** Wrap Phase 1's client as an MCP server so the report
+   can be queried directly from Claude (e.g. "pull last month's work order list
+   from Lifesaver"). Deployed to Cloud Run — see `DEPLOY.md`.
+3. **Phase 3 — retention KPI warehouse + dashboard.** Accumulate work-order
+   history into a local warehouse (solving both the ~36-month source-retention
+   limit and the fact that the KPIs need full per-customer history) and serve
+   five retention KPIs plus a business-revenue view. Backend built in
+   `warehouse/` (SQLite; see `warehouse/README.md`). Design, KPI definitions, and
+   open questions: `dashboard/DESIGN.md`.
 
 Phase 1 must work standalone and be testable on its own before Phase 2 wraps it.
 Approval to programmatically access this report has already been obtained from
 Lifesaver Software.
-
-**Phase 3 — retention KPI dashboard.** Accumulate work-order history into a local
-warehouse (solving both the 36-month source-retention limit and the fact that the
-KPIs need full per-customer history) and serve five retention KPIs. Backend built
-in `warehouse/` (SQLite; see `warehouse/README.md`). Design and open questions:
-`dashboard/DESIGN.md`.
 
 ## Background / how the target system works
 
@@ -112,35 +112,47 @@ cookie to the plain HTTP client for steps 1–3.
   (`lifesaver_report_pull.py`, shared earlier in this conversation) — treat it
   as the skeleton for the core client logic, not the finished service.
 
-### Open questions to resolve during implementation
+### Open questions — all resolved during implementation
 
-- [ ] What does the login POST actually look like? (endpoint, field names, any
-      CSRF/anti-forgery token, whether it's its own Web Forms postback)
-- [ ] Where exactly does `ReportSession` appear in the step-2 response body?
-      (confirm format so the scraping regex/parser is reliable)
-- [ ] Is `ControlID` stable across sessions/logins, or regenerated each time?
-      If regenerated, where does it first appear (probably also needs to be
-      scraped from the initial page load, not hardcoded).
-- [ ] Does the step-2 postback actually require *every* `ctl00$...` field from
-      the original page echoed back, or can extraneous ones be dropped?
-- [ ] Session/cookie lifetime — how long before a re-login is needed?
-- [x] Confirm export `Format=CSV` output is clean/parseable as-is, or if it
-      needs cleanup. **Answered:** WorkOrderList's CSV is clean (UTF-8 BOM only).
-      Other reports' CSV is unusable — see "Report coverage" below.
+The working, deployed flow is `lifesaver/client.py` (`lifesaver_report_pull.py`
+is the original single-file version). What the investigation settled:
+
+- **Login** is a plain form POST (`UserName` / `Password`), no JS token gate — no
+  headless browser needed anywhere.
+- **`ReportSession`**, **`ControlID`**, and **`RSProxy`** are pulled out of the
+  step-2 postback response by regex (they appear in the embedded viewer image
+  URL) — read fresh on every pull, never hardcoded.
+- The step-2 postback echoes back the hidden Web Forms state fields
+  (`__VIEWSTATE`, `__VIEWSTATEGENERATOR`, `__EVENTVALIDATION`, …) **and every
+  `ctl00$...` input on the page**, unchanged, exactly as the browser would —
+  then overrides the two date fields and fires the "View Report" button by its
+  own `name=value`.
+- Session expiry is handled transparently — the client re-logs-in and retries
+  once on an auth failure, and clears its own stale session on
+  `UserAlreadyLoggedIn`.
+- Export `Format=CSV` for `WorkOrderList` is clean (UTF-8 BOM only). Other
+  reports' CSV is unusable — see "Report coverage" below.
 
 ## Phase 2 — MCP server
 
 ### Responsibilities
 
-- Wrap Phase 1's API as an MCP server exposing at least one tool, e.g.
+- Wrap Phase 1 as an MCP server exposing at least one tool, e.g.
   `get_work_order_list_report(start_date, end_date)`, returning the parsed
   report data to Claude.
 - Tool description/schema should make clear what date range format is
   expected and what the report contains, so Claude can call it correctly
   without guessing.
-- Should call Phase 1's API over HTTP (keep the two phases decoupled) rather
-  than reimplementing the scraping logic — this keeps the MCP layer thin and
-  lets Phase 1 be tested/used independently.
+- Reuse Phase 1's `LifesaverClient` + parser rather than reimplementing the
+  scraping logic — this keeps the MCP layer thin and lets Phase 1 be
+  tested/used independently.
+
+**As built:** the server calls `LifesaverClient` **in-process** (not Phase 1's
+HTTP API — that app is local-dev only). It holds one login for the life of the
+process and serialises pulls behind a lock, because LifeSaver allows one session
+per user; the deployed Cloud Run service is pinned to a single instance for the
+same reason (see `DEPLOY.md`). Transports: stdio locally, streamable-http with
+bearer-token auth when deployed.
 
 ### Non-goals for Phase 2 (initially)
 
