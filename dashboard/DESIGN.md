@@ -381,8 +381,9 @@ without touching them.
    0 unresolved, 0 row loss. `first_to_second_rate` = 19.1 % (baseline 19.2 %).
    Other baselines match the warehouse's late-2025 snapshots and have since
    drifted up (§12 #7). No horizon bias — store began May 2024 (§7).
-8. Decide production persistence (§5 sub-section / §12 #6).
-9. Daily + monthly Cloud Scheduler triggers on a Cloud Run Job.
+8. ~~Decide production persistence~~ — **done**, GCS (§15).
+9. ~~Daily refresh trigger~~ — **built 2026-09-17** as a scheduled GitHub Actions
+   workflow, not a Cloud Run Job (§15 has the detail and what's still pending).
 10. MCP read tools: `get_retention_kpis(...)`, `get_customer_history(...)`; retire
     the live-scrape path (model A, §9).
 11. ~~Dashboard front end~~ — **v2 done 2026-09-07.** `dashboard/build.py` reads
@@ -415,11 +416,11 @@ without touching them.
     ~$39.5k net — it only moves comparisons whose prior-year month is Oct or
     Nov 2024 (the trailing-12 view); toggle scope is the business section only,
     retention KPIs untouched.
-12. **Daily auto-refresh** — see §15. Needs step 8 (persistent warehouse) first.
-    *Partly done (2026-09-07):* dashboard **code** deploys are automated — a push
-    to `main` re-renders `index.html` from the GCS warehouse and re-uploads it
-    (`.github/workflows/publish.yml` → `deploy-dashboard` → `dashboard/publish.sh`).
-    The scheduled **data** pull is still open.
+12. ~~Daily auto-refresh~~ — see §15. **Code** deploys (push to `main` →
+    re-render from the GCS warehouse) were automated 2026-09-07
+    (`deploy-dashboard`); the scheduled **data** pull (`refresh.yml`) was built
+    2026-09-17 and needs the two IAM grants in DEPLOY.md §7 before its first
+    real run.
 13. Fuzzy identity — only if §12 #5 finds enough near-duplicate names to matter.
 
 ## 15. Daily refresh
@@ -444,23 +445,28 @@ stays frozen (the warehouse's `is_final` flag guarantees it).
   sync` → `dashboard/publish.sh` → push db + raw back. Runs locally (gcloud auth
   + LIFESAVER creds) and is what the scheduled job will run.
 
-### Still to do
-
-1. **Make the site readable.** The site bucket is not public yet — pending a
-   decision on exposure (the dashboard carries customer counts and lifetime
-   revenue). Either `allUsers:objectViewer` on the bucket (anyone with the URL),
-   or put it behind auth (IAP + load balancer, or Firebase with sign-in).
-2. **Schedule the data pull.** Dashboard *code* deploys are now automated on
-   push to `main` (`.github/workflows/publish.yml` → `deploy-dashboard`), but
-   the daily LifeSaver pull / KPI recompute is not. Options: a Cloud Run Job
-   running `refresh.sh` on a daily Cloud Scheduler trigger
-   (`cloudscheduler.googleapis.com` not yet enabled; needs an image with the
-   warehouse + dashboard code + gcloud + LIFESAVER creds from Secret Manager and
-   a service account with objectAdmin on both buckets), or a scheduled GitHub
-   Actions workflow with the LIFESAVER creds as repo secrets.
-3. **LifeSaver single-session** — the job and the deployed MCP server both log
-   in. Low collision risk for now (MCP is min-instances=0, on-demand; the job
-   runs at a fixed early hour). Clean fix is model A (§9).
+1. ~~Make the site readable~~ — **done.** The user opted for public-over-obscurity
+   (2026-09-17); `allUsers:objectViewer` is set on the site bucket. Live at
+   `https://storage.googleapis.com/lifesaver-kpi-dashboard-303f74/index.html`.
+2. ~~Schedule the data pull~~ — **built 2026-09-17**,
+   `.github/workflows/refresh.yml`: daily cron (09:17 UTC, adjustable) → pull
+   `warehouse.db` from GCS → `warehouse.job sync` → `dashboard/publish.sh` →
+   push `warehouse.db` + new raw back. Reuses the `gha-deployer` WIF identity
+   from `publish.yml` rather than a Cloud Run Job + Cloud Scheduler — CI/CD
+   already existed by the time this got built, so no new API, service account,
+   or container image was needed. **Not yet live**: needs two IAM grants for
+   `gha-deployer` that `gcloud` auth being expired blocked applying —
+   `storage.objectAdmin` on the warehouse bucket (deploy only has read) and
+   `secretmanager.secretAccessor` on `lifesaver-username` / `lifesaver-password`.
+   Commands are in DEPLOY.md §7; run those, then `workflow_dispatch` it once by
+   hand to confirm before trusting the cron.
+3. **LifeSaver single-session.** The refresh workflow and the deployed MCP
+   server (now `--min-instances=1`, per DEPLOY.md §3, to keep the login warm —
+   this raises collision odds versus the min-instances=0 assumption this section
+   used to make) both use the one shared session. Self-heals either way — the
+   client auto-clears its own stale session and retries once — but a claude.ai
+   call during the refresh window could see one extra retry. Picking the store's
+   quietest hour for the cron is the mitigation until model A (§9) lands.
 
 Optional later: switch `index.html` to `fetch('data.json')` so a refresh only
 re-uploads the small JSON. `build.py --json` already emits it.

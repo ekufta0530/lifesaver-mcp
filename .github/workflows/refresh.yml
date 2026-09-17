@@ -1,0 +1,75 @@
+name: refresh dashboard data
+
+# Daily: pull fresh Lifesaver data, recompute KPIs, rebuild + publish the
+# dashboard. This is the "live" half of the dashboard -- the current month and
+# quarter move with each run; every closed period is frozen by the warehouse
+# itself (kpi_monthly.is_final) and cannot change here.
+#
+# Reuses the same WIF identity as publish.yml (gha-deployer) -- see DEPLOY.md
+# §7 for the one-time IAM grants this workflow needs beyond what deploy already
+# has (write access to the warehouse bucket, read access to the Lifesaver
+# secrets).
+#
+# Holds the single shared LifeSaver session for its duration (client.logout()
+# releases it when warehouse.job sync finishes) -- overlapping with a live MCP
+# call is possible but low-risk: the MCP server auto-clears its own stale
+# session and retries once (see lifesaver/client.py).
+
+on:
+  schedule:
+    - cron: "17 9 * * *"   # 09:17 UTC daily -- off-the-hour to dodge GHA's cron pile-up
+  workflow_dispatch:
+
+env:
+  SITE_BUCKET: lifesaver-kpi-dashboard-303f74
+  WAREHOUSE_BUCKET: lifesaver-kpi-warehouse
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+      - uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: mcps-507817
+
+      - id: secrets
+        uses: google-github-actions/get-secretmanager-secrets@v2
+        with:
+          secrets: |-
+            LIFESAVER_USERNAME:mcps-507817/lifesaver-username
+            LIFESAVER_PASSWORD:mcps-507817/lifesaver-password
+
+      - name: Pull warehouse from GCS
+        run: |
+          gcloud storage cp "gs://$WAREHOUSE_BUCKET/warehouse.db" warehouse.db
+          mkdir -p warehouse_raw
+          gcloud storage rsync -r "gs://$WAREHOUSE_BUCKET/warehouse_raw" warehouse_raw
+
+      - name: Pull fresh Lifesaver data + recompute KPIs
+        env:
+          LIFESAVER_USERNAME: ${{ steps.secrets.outputs.LIFESAVER_USERNAME }}
+          LIFESAVER_PASSWORD: ${{ steps.secrets.outputs.LIFESAVER_PASSWORD }}
+        run: |
+          python -m warehouse.job sync
+          python -m warehouse.job status
+
+      - name: Rebuild + publish dashboard
+        run: bash dashboard/publish.sh
+
+      - name: Push warehouse back to GCS
+        run: |
+          gcloud storage cp warehouse.db "gs://$WAREHOUSE_BUCKET/warehouse.db"
+          gcloud storage rsync -r warehouse_raw "gs://$WAREHOUSE_BUCKET/warehouse_raw"

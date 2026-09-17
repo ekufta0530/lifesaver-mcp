@@ -166,8 +166,8 @@ Once connected, the `get_work_order_list_report` tool is available in chats.
 
 `deploy-dashboard` is a **code** refresh only — it re-renders the page from
 whatever data is already in `warehouse.db`. The daily LifeSaver pull / KPI
-recompute (`dashboard/refresh.sh` full cycle) is **not** automated here; it still
-runs by hand (future: a scheduled Cloud Run Job, DESIGN.md §15).
+recompute is `.github/workflows/refresh.yml` (§7 below) — a separate, scheduled
+workflow, not part of this push-triggered one.
 
 ### One-time setup: Workload Identity Federation
 
@@ -234,6 +234,53 @@ Re-run an earlier successful workflow, or pin to an older image:
 gcloud run services update lifesaver-mcp --region=us-central1 \
   --image=ghcr.io/ekufta0530/lifesaver-mcp:sha-<older-commit>
 ```
+
+---
+
+## 7. Daily dashboard refresh (`.github/workflows/refresh.yml`)
+
+Runs on a schedule (09:17 UTC — adjust the cron to taste once you know the
+store's timezone / off-hours): pull `warehouse.db` from GCS → `warehouse.job
+sync` (logs into lsscloud.com, pulls the trailing window, recomputes KPIs) →
+`dashboard/publish.sh` (rebuild `index.html` + `data.json`, upload to the site
+bucket) → push `warehouse.db` + any new raw files back to GCS.
+
+Only the **current month and quarter** move — every closed period is frozen by
+`kpi_monthly.is_final` in the warehouse itself, so this can never rewrite a
+report that already closed.
+
+It reuses the `gha-deployer` WIF identity from §6, which needs two grants beyond
+what deploy already set up — **write** access to the warehouse bucket (deploy
+only has read) and **read** access to the two Lifesaver secrets:
+
+```bash
+PROJECT=mcps-507817
+SA=gha-deployer@$PROJECT.iam.gserviceaccount.com
+
+# upgrade viewer -> objectAdmin so the workflow can write warehouse.db back
+gcloud storage buckets add-iam-policy-binding gs://lifesaver-kpi-warehouse \
+  --member="serviceAccount:$SA" --role=roles/storage.objectAdmin
+
+# read the same two secrets the Cloud Run service uses
+for s in lifesaver-username lifesaver-password; do
+  gcloud secrets add-iam-policy-binding $s \
+    --member="serviceAccount:$SA" --role=roles/secretmanager.secretAccessor
+done
+```
+
+No new API, service account, or container image — it's a second GitHub Actions
+workflow on the same runners, using the same WIF auth as `deploy-dashboard`.
+(An earlier design sketch used a Cloud Run Job + Cloud Scheduler instead; once
+CI/CD existed this was simpler and needed no new GCP surface.)
+
+**Session collision:** this workflow and the deployed MCP server both log into
+the single shared LifeSaver session. The MCP server auto-clears its own stale
+session and retries once (`lifesaver/client.py`), so a collision self-heals, but
+a claude.ai call during the refresh window could see one extra retry / a few
+seconds of latency. Scheduling the cron for the store's quietest hour avoids it
+in practice.
+
+Trigger manually any time: **Actions → refresh dashboard data → Run workflow**.
 
 ---
 
