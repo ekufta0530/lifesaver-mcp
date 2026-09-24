@@ -530,6 +530,8 @@ tbody th{text-align:left;font-weight:500;color:var(--muted)}
 .yoytable tr.tot th,.yoytable tr.tot td{border-top:2px solid var(--ink);border-bottom:0;
   font-weight:600;font-family:var(--serif)}
 .yoytable tr.aff td,.yoytable tr.aff th{background:var(--wash)}
+.yoytable tr.ref td,.yoytable tr.ref th{color:var(--muted)}
+.yoytable .pypart{font-size:9px;color:var(--muted);font-weight:400}
 .yoytable .exmark{font-size:8.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
   color:var(--watch);margin-left:6px;vertical-align:1px}
 
@@ -820,7 +822,14 @@ APP_JS = r"""
     function vv(m){ var x = M[m]?M[m].v:0; if(yoyEx && OM[m]) x -= OM[m].v; return x; }
     function avg(rev,n){ return n>0 ? rev/n : null; }
 
-    var start = yoyMode==='calendar' ? CUR_YR+'-01' : addM(CUR,-11);
+    // Trailing mode shows the current month PLUS a full 12 months back (13 rows,
+    // Sep'25..Sep'26 style) so the oldest row is the same calendar month as the
+    // current one, a year back. The "Trailing 12 mo" total stays a true rolling
+    // 12-month window (totFrom..CUR) so it keeps matching the "Trailing 12
+    // months" business tile above -- the extra oldest row is context, not
+    // counted in that total.
+    var start = yoyMode==='calendar' ? CUR_YR+'-01' : addM(CUR,-12);
+    var totFrom = yoyMode==='calendar' ? start : addM(CUR,-11);
     var months = []; for(var m=start; m<=CUR; m=addM(m,1)) months.push(m);
 
     var ex = B.outlier || {}, hasEx = ex.total_v > 0;
@@ -835,15 +844,19 @@ APP_JS = r"""
       var pyV = part ? (yoyEx ? B.partial_ly_v_ex   : B.partial_ly_v)   : vv(pm);
       var aff = yoyEx && (isOut(cm) || isOut(pm));
       if(aff) anyAff = true;
-      tot.cyR+=cyR; tot.cyV+=cyV; tot.pyR+=pyR; tot.pyV+=pyV;
-      return {cm:cm, part:part, cyR:cyR, cyV:cyV, pyR:pyR, pyV:pyV, aff:aff};
+      if(cm >= totFrom){ tot.cyR+=cyR; tot.cyV+=cyV; tot.pyR+=pyR; tot.pyV+=pyV; }
+      return {cm:cm, part:part, cyR:cyR, cyV:cyV, pyR:pyR, pyV:pyV, aff:aff, ref:cm<totFrom};
     });
 
     function dcell(d){ return '<td class="'+relCls(d)+'">'+pctTxt(d)+'</td>'; }
     function line(lbl, x, cls){
+      // x.part's "last yr" figures are a partial month too (same day-count as
+      // this year's MTD, not the full month) -- mark them so they're never
+      // mistaken for the full prior-year month shown on its own row above.
+      var pn = x.part ? ' <span class="pypart">(1–'+B.partial_day+')</span>' : '';
       return '<tr'+(cls?' class="'+cls+'"':'')+'><th scope="row">'+lbl+'</th>'+
-        '<td>'+usdFull(x.pyR)+'</td><td>'+usdFull(x.cyR)+'</td>'+dcell(rel(x.cyR,x.pyR))+
-        '<td>'+x.pyV.toLocaleString()+'</td><td>'+x.cyV.toLocaleString()+'</td>'+dcell(rel(x.cyV,x.pyV))+
+        '<td>'+usdFull(x.pyR)+pn+'</td><td>'+usdFull(x.cyR)+'</td>'+dcell(rel(x.cyR,x.pyR))+
+        '<td>'+x.pyV.toLocaleString()+pn+'</td><td>'+x.cyV.toLocaleString()+'</td>'+dcell(rel(x.cyV,x.pyV))+
         '<td>'+usdFull(avg(x.cyR,x.cyV))+'</td>'+dcell(rel(avg(x.cyR,x.cyV),avg(x.pyR,x.pyV)))+'</tr>';
     }
 
@@ -852,7 +865,7 @@ APP_JS = r"""
         (yoyMode==='trailing' ? ' ’'+x.cm.slice(2,4) : '') +
         (x.part ? '<span class="mtd">MTD</span>' : '') +
         (x.aff ? '<span class="exmark" title="'+esc(ex.label)+' removed">outlier removed</span>' : '');
-      return line(lbl, x, (x.part ? 'live' : '') + (x.aff ? ' aff' : ''));
+      return line(lbl, x, (x.part ? 'live' : '') + (x.aff ? ' aff' : '') + (x.ref ? ' ref' : ''));
     }).join('');
     body += line(yoyMode==='calendar' ? CUR_YR+' YTD' : 'Trailing 12 mo', tot, 'tot');
 
@@ -861,6 +874,9 @@ APP_JS = r"""
       ex.total_v+' orders, '+exMonths.map(ml).join(' &amp; ')+')</span></label>' : '';
 
     var notes = [];
+    if(rows.some(function(x){return x.ref;}))
+      notes.push(ml(rows[0].cm)+' is shown for reference (same month as the current one, '+
+        'a year back); the total below covers the rolling 12 months, '+ml(totFrom)+'–'+ml(CUR)+'.');
     if(rows.some(function(x){return x.part;}))
       notes.push('MTD: through '+mDay(PARTIAL,B.partial_day)+', measured against '+
         mname(addM(PARTIAL,-12)).slice(0,3)+' 1–'+B.partial_day+', '+addM(PARTIAL,-12).slice(0,4)+'.');
