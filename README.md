@@ -30,8 +30,10 @@ history. Three phases (see [spec.md](spec.md) and [dashboard/DESIGN.md](dashboar
 | `warehouse/` | Phase 3 backend: raw landing → `line_items` → `visits` → `kpi_monthly`. Pure-function analytics + one SQLite module. CLI: `python -m warehouse.job` |
 | `dashboard/build.py` | reads `warehouse.db` → self-contained `index.html` (+ `data.json`) |
 | `dashboard/publish.sh` / `refresh.sh` | publish the rendered site to GCS / full daily cycle (pull → sync → publish) |
-| `lifesaver_report_pull.py` | original standalone reference script (still runnable) |
-| `scripts/inspect/` | one-off recon of the other SSRS report pages (parked — see its README) |
+| `lifesaver_report_pull.py` | original standalone reference script (still runnable); also has `pull_invoice()` (single invoice as PDF) and `pull_customer_export()` (full customer list as CSV) |
+| `scripts/pull_invoices.py` | bulk-pull invoices as PDFs (`invoice_<id>.pdf`), from a WorkOrderList CSV or a plain list of invoice numbers |
+| `scripts/pull_customers.py` | pull the full customer list as CSV (every customer, not scoped to any date range) |
+| `scripts/inspect/` | one-off recon of the other SSRS report pages (parked — see its README); also has `verify_invoice_endpoint.py` and `verify_customer_export.py`, which confirmed those two flows live before they were promoted into `lifesaver_report_pull.py` |
 | `Dockerfile`, `DEPLOY.md` | one-image build + Cloud Run deploy for the remote (claude.ai) MCP setup |
 | `.github/workflows/publish.yml` | on push to `main`: test → build+push image to GHCR → deploy MCP to Cloud Run → rebuild+publish the dashboard |
 | `tests/` | offline suite: fake session + saved HTML/CSV fixtures, plus the warehouse pipeline tests |
@@ -101,6 +103,45 @@ gitignored — the system of record is a GCS bucket (see DESIGN.md §15).
 ```bash
 export LIFESAVER_USERNAME=... LIFESAVER_PASSWORD=...
 .venv/bin/python lifesaver_report_pull.py --start 8/1/2025 --end 8/31/2025 --out aug.csv
+```
+
+## Pulling invoices as PDFs
+
+A single invoice (`lifesaver_report_pull.pull_invoice(session, invoice_number)`)
+hits a different endpoint than WorkOrderList — `/Reports/Invoice/` needs no
+postback, but the human-readable "Invoice #" must first be resolved to an
+internal id via a separate POST (`resolve_invoice_id()`) before it works;
+using the human number directly renders a silently-empty PDF (`$0.00`
+everywhere, `#Error` in place of the invoice number). See
+[spec.md](spec.md) → "Invoices — a separate, simpler flow" for how both of
+these were confirmed.
+
+Bulk-pulling, from a WorkOrderList CSV export's `invoiceNumber` column or a
+plain list:
+
+```bash
+export LIFESAVER_USERNAME=... LIFESAVER_PASSWORD=...
+.venv/bin/python scripts/pull_invoices.py --csv aug.csv --out-dir invoices
+.venv/bin/python scripts/pull_invoices.py --ids 584,591,602 --out-dir invoices
+```
+
+Writes `invoices/invoice_<id>.pdf` per invoice, one login/session for the
+whole batch, a delay between requests (`--delay`, default 1.5s), and one
+invoice failing doesn't stop the rest.
+
+## Pulling the customer list
+
+Don't scrape it from the invoice PDFs (name + cell phone only, no
+email/address, one request per invoice) — the report catalog has a report
+built for exactly this. `Filter: "No filter, show all customers."` returns
+every customer in the database with real columns (name, email, phone,
+address, first/last purchase, total spend, ...), not scoped to any date
+range. See [spec.md](spec.md) → "Customer list — a report built for exactly
+this, once found" for how that was confirmed.
+
+```bash
+export LIFESAVER_USERNAME=... LIFESAVER_PASSWORD=...
+.venv/bin/python scripts/pull_customers.py --out customers.csv
 ```
 
 ## One session per user

@@ -16,17 +16,21 @@ def load_fixture_bytes(name: str) -> bytes:
 class FakeResponse:
     """Minimal stand-in for requests.Response for offline tests."""
 
-    def __init__(self, *, text="", content=b"", url="", status_code=200, history=None, headers=None):
+    def __init__(self, *, text="", content=b"", url="", status_code=200, history=None, headers=None, json_data=None):
         self.text = text
         self.content = content or text.encode()
         self.url = url
         self.status_code = status_code
         self.history = history or []
         self.headers = headers or {"Content-Type": "text/html; charset=utf-8"}
+        self._json_data = json_data
 
     def raise_for_status(self):
         if self.status_code >= 400:
             raise RuntimeError(f"HTTP {self.status_code}")
+
+    def json(self):
+        return self._json_data
 
 
 class FakeSession:

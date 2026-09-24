@@ -24,6 +24,11 @@ def report_soup():
     return BeautifulSoup(load_fixture("report_page.html"), "html.parser")
 
 
+@pytest.fixture
+def customer_export_soup():
+    return BeautifulSoup(load_fixture("customer_export_page.html"), "html.parser")
+
+
 # --- hidden field scraping ---------------------------------------------------
 
 def test_extract_hidden_fields(report_soup):
@@ -144,3 +149,102 @@ def test_pull_report_wires_steps_together(fake_session):
     out = lrp.pull_report(fake_session, "9/1/2025", "9/1/2026")
     assert out == b"a,b\n1,2\n"
     assert [c[0] for c in fake_session.calls] == ["GET", "POST", "GET"]
+
+
+# --- invoices ----------------------------------------------------------------
+
+def test_export_csv_supports_other_formats(fake_session):
+    fake_session.next_response = FakeResponse(content=b"%PDF-1.4 fake")
+    out = lrp.export_csv(fake_session, "sess42", "ctrl42", export_format="PDF")
+    assert out == b"%PDF-1.4 fake"
+    _, _, kw = fake_session.calls[-1]
+    assert kw["params"]["Format"] == "PDF"
+
+
+def test_resolve_invoice_id_parses_known_key(fake_session):
+    fake_session.next_response = FakeResponse(json_data={"storeInvoiceId": 10044999})
+    resolved = lrp.resolve_invoice_id(fake_session, "584")
+    assert resolved == "10044999"
+
+    method, url, kw = fake_session.calls[-1]
+    assert method == "POST"
+    assert url == lrp.RESOLVE_INVOICE_ID_URL
+    assert kw["json"] == {"invoiceId": "584"}
+
+
+def test_resolve_invoice_id_raises_with_raw_body_on_unknown_shape(fake_session):
+    fake_session.next_response = FakeResponse(json_data={"someUnexpectedKey": 123})
+    with pytest.raises(ValueError, match="someUnexpectedKey"):
+        lrp.resolve_invoice_id(fake_session, "584")
+
+
+def test_get_invoice_report_session_plain_get_no_postback(fake_session):
+    fake_session.next_response = FakeResponse(text=load_fixture("postback_ok.html"))
+    session_id, control_id, rsproxy = lrp.get_invoice_report_session(fake_session, "10044999")
+
+    assert session_id == "2cmn1ovaxf1tl2rpxj0ojb45"
+    assert control_id == "4034d0674abc4e9f9b2c1d5e6f7a8b90"
+
+    method, url, kw = fake_session.calls[-1]
+    assert method == "GET"
+    assert url == lrp.INVOICE_REPORT_URL
+    assert kw["params"] == {"StoreId": lrp.DEFAULT_STORE_ID, "InvoiceId": "10044999"}
+
+
+def test_pull_invoice_wires_steps_together(fake_session):
+    fake_session.responses = [
+        FakeResponse(json_data={"storeInvoiceId": 10044999}),  # resolve_invoice_id
+        FakeResponse(text=load_fixture("postback_ok.html")),   # get_invoice_report_session
+        FakeResponse(content=b"%PDF-1.4 fake"),                 # export_csv
+    ]
+    out = lrp.pull_invoice(fake_session, "584")
+    assert out == b"%PDF-1.4 fake"
+    assert [c[0] for c in fake_session.calls] == ["POST", "GET", "GET"]
+
+    resolve_params = fake_session.calls[0][2]["json"]
+    assert resolve_params == {"invoiceId": "584"}
+
+    render_params = fake_session.calls[1][2]["params"]
+    assert render_params["InvoiceId"] == "10044999"
+
+    export_params = fake_session.calls[-1][2]["params"]
+    assert export_params["Format"] == "PDF"
+    assert export_params["ReportSession"] == "2cmn1ovaxf1tl2rpxj0ojb45"
+
+
+# --- customer export ---------------------------------------------------------
+
+def test_find_customer_export_filter_field(customer_export_soup):
+    filter_field, no_filter_value, button_field = lrp.find_customer_export_filter_field(
+        customer_export_soup
+    )
+    assert filter_field == "ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$ddValue"
+    assert no_filter_value == "1"
+    assert button_field == lrp.VIEW_REPORT_BUTTON_FIELD
+
+
+def test_find_customer_export_filter_field_raises_without_matching_option():
+    soup = BeautifulSoup(
+        '<input type="submit" name="ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl00" value="View Report" />'
+        '<select name="foo"><option value="x">Something else</option></select>',
+        "html.parser",
+    )
+    with pytest.raises(ValueError, match="No filter"):
+        lrp.find_customer_export_filter_field(soup)
+
+
+def test_pull_customer_export_sets_no_filter_and_exports_csv(fake_session):
+    fake_session.responses = [
+        FakeResponse(text=load_fixture("customer_export_page.html")),  # get_report_page
+        FakeResponse(text=load_fixture("postback_ok.html")),           # postback
+        FakeResponse(content=b"firstName,lastName\nJane,Doe\n"),        # export_csv
+    ]
+    out = lrp.pull_customer_export(fake_session)
+    assert out == b"firstName,lastName\nJane,Doe\n"
+    assert [c[0] for c in fake_session.calls] == ["GET", "POST", "GET"]
+
+    method, url, kw = fake_session.calls[1]
+    assert url == lrp.CUSTOMER_EXPORT_URL
+    data = kw["data"]
+    assert data["ctl00$ContentPlaceHolder1$reportViewer$ctl08$ctl09$ddValue"] == "1"
+    assert data[lrp.VIEW_REPORT_BUTTON_FIELD] == lrp.VIEW_REPORT_BUTTON_VALUE

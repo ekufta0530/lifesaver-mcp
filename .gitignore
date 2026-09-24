@@ -5,6 +5,10 @@ __pycache__/
 *.csv
 !tests/fixtures/*.csv
 
+# pulled invoice PDFs contain customer data -- never committed
+*.pdf
+invoices/
+
 # warehouse (Phase 3): local data, never committed
 warehouse.db
 warehouse.db-wal
@@ -17,3 +21,4 @@ warehouse_raw/
 # generated dashboard
 dashboard/index.html
 dashboard/data.json
+.DS_Store

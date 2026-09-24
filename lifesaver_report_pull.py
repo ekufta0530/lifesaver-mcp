@@ -41,6 +41,15 @@ Flow:
      page of the paginated on-screen viewer (SSRS export always ignores
      on-screen pagination).
 
+Invoices (pull_invoice()) are a separate, simpler flow confirmed live
+2026-09-17 against /Reports/Invoice/ -- no postback needed. A plain GET with
+StoreId + InvoiceId (the same "Invoice #" WorkOrderList already returns) in
+the querystring renders the report and embeds a fresh ReportSession/ControlID
+directly in that response, so steps 2-3 above collapse into one GET. See
+get_invoice_report_session() and scripts/inspect/verify_invoice_endpoint.py
+(the script used to confirm this). For bulk-pulling invoices as PDFs, see
+scripts/pull_invoices.py.
+
 Still unverified (couldn't test without real creds / without disrupting
 the logged-in session used for recon):
   - The exact shape of a *failed* login response (redirect vs. re-rendered
@@ -67,6 +76,40 @@ BASE = "https://lsscloud.com"
 LOGIN_URL = f"{BASE}/Account/Login"
 REPORT_PAGE_URL = f"{BASE}/Reports/WorkOrderList"
 EXPORT_PATH = f"{BASE}/Reserved.ReportViewerWebControl.axd"
+
+# Confirmed live (2026-09-17, invoice #584): the "Find Invoice" report catalog
+# entry (/Reporting/ReprintInvoice) is a plain search box, not a ReportViewer
+# parameter page -- entering an invoice number there loads the actual report
+# in an iframe pointing here, with the invoice # passed as a querystring
+# param. Unlike WorkOrderList, no postback is needed: a plain GET with
+# StoreId/InvoiceId already renders the report and embeds a fresh
+# ReportSession/ControlID in the response, same as the WorkOrderList postback
+# response does. See scripts/inspect/verify_invoice_endpoint.py.
+INVOICE_REPORT_URL = f"{BASE}/Reports/Invoice/"
+DEFAULT_STORE_ID = "6006"
+
+# Confirmed live (2026-09-17): unlike every other non-WorkOrderList report
+# (see "Report coverage" in spec.md), this one exports real per-customer
+# columns (firstName/lastName/emailAddress/cellPhone/address*/firstPurchase/
+# lastPurchase/totalPurchase/...) as CSV -- once its "Filter:" dropdown is
+# set to "No filter, show all customers.", which also makes it return every
+# customer regardless of order date, not just customers within some date
+# range (confirmed: 672 rows, no truncation, dates spanning years).
+# CustomerInfoExport_Mailchimp / _ConstantContact share the same shape if a
+# narrower column set (built for those specific integrations) is ever wanted
+# instead.
+CUSTOMER_EXPORT_URL = f"{BASE}/Reports/ConsumerInfoReport"
+CUSTOMER_EXPORT_NO_FILTER_MARKERS = ("No filter", "show all customers")
+
+# Confirmed live (2026-09-17): the InvoiceId that /Reports/Invoice/ actually
+# needs is NOT the human-readable "Invoice #" (WorkOrderList's invoiceNumber
+# column) -- it's a separate internal id, resolved via this endpoint first.
+# Skipping this step doesn't fail loudly: /Reports/Invoice/ still returns 200
+# with a valid-looking ReportSession/ControlID and a well-formed PDF, but
+# every field is unbound (Order Date/Last Revised show 1/1/0001 --
+# DateTime.MinValue -- "Invoice #" itself shows #Error, all amounts $0.00).
+# See resolve_invoice_id().
+RESOLVE_INVOICE_ID_URL = f"{BASE}/Invoice/GetStoreInvoiceId/"
 
 # Confirmed live: the RS backend this org's ReportViewer proxies to. This is
 # tied to the customer's on-prem SQL/reporting box, not to a session, so it's
@@ -239,7 +282,14 @@ def export_csv(
     control_id: str,
     rsproxy: str = DEFAULT_RSPROXY,
     file_name: str = "LifeSaver Reports",
+    export_format: str = "CSV",
 ) -> bytes:
+    """
+    Despite the name (kept for backward compatibility -- this is the
+    original WorkOrderList CSV puller), this works for any SSRS export
+    format via export_format: "CSV", "PDF" (used by pull_invoice()),
+    "EXCELOPENXML", etc.
+    """
     params = {
         "ReportSession": report_session,
         "Culture": "1033",
@@ -252,14 +302,15 @@ def export_csv(
         "OpType": "Export",
         "FileName": file_name,
         "ContentDisposition": "OnlyHtmlInline",
-        "Format": "CSV",
+        "Format": export_format,
     }
     resp = session.get(EXPORT_PATH, params=params)
     resp.raise_for_status()
     # Confirmed live: clicking this in a real browser triggers a genuine
     # file download (Content-Disposition: attachment) rather than an XHR --
     # that's just browser UI behavior and doesn't matter here, resp.content
-    # is the raw CSV bytes either way.
+    # is the raw bytes either way (CSV text, PDF binary, etc, depending on
+    # export_format).
     return resp.content
 
 
@@ -284,6 +335,125 @@ def pull_report(
     soup = get_report_page(session, report_url)
     html = submit_date_range(session, soup, start_date, end_date, report_url)
     report_session, control_id, rsproxy = extract_report_session(html)
+    return export_csv(session, report_session, control_id, rsproxy, file_name)
+
+
+def resolve_invoice_id(session: requests.Session, invoice_number: str) -> str:
+    """
+    Confirmed live (2026-09-17): POSTing {"invoiceId": "<human Invoice #>"}
+    as JSON to RESOLVE_INVOICE_ID_URL resolves it to the internal id
+    /Reports/Invoice/ actually needs (e.g. human invoice #584 -> internal
+    10044999). The exact response-JSON key wasn't captured before the source
+    session expired, so this tries the likely candidates and raises with the
+    raw body if none match -- if you hit that error, check the real key in
+    the response and add it to the `key in (...)` tuple below.
+    """
+    resp = session.post(RESOLVE_INVOICE_ID_URL, json={"invoiceId": str(invoice_number)})
+    resp.raise_for_status()
+    data = resp.json()
+    for key in (
+        "storeInvoiceId", "StoreInvoiceId", "invoiceId", "InvoiceId", "id", "Id",
+    ):
+        if isinstance(data, dict) and data.get(key) not in (None, ""):
+            return str(data[key])
+    raise ValueError(
+        f"Could not find a resolved invoice id in the GetStoreInvoiceId "
+        f"response for invoice {invoice_number!r} -- raw response: {data!r}. "
+        f"Inspect this in DevTools and add the right key to resolve_invoice_id()."
+    )
+
+
+def get_invoice_report_session(
+    session: requests.Session,
+    resolved_invoice_id: str,
+    store_id: str = DEFAULT_STORE_ID,
+) -> tuple[str, str, str]:
+    """
+    Confirmed live (2026-09-17, invoice #584): a plain GET on
+    INVOICE_REPORT_URL with StoreId/InvoiceId in the querystring renders the
+    invoice immediately -- no postback needed, unlike WorkOrderList. The
+    ReportSession/ControlID are already embedded in this response, same
+    regex shape as the WorkOrderList postback response.
+
+    `resolved_invoice_id` must already be the internal id from
+    resolve_invoice_id() -- NOT the human-readable "Invoice #" -- or the
+    report renders its empty-state template (see RESOLVE_INVOICE_ID_URL).
+    """
+    resp = session.get(
+        INVOICE_REPORT_URL, params={"StoreId": store_id, "InvoiceId": resolved_invoice_id}
+    )
+    resp.raise_for_status()
+    return extract_report_session(resp.text)
+
+
+def pull_invoice(
+    session: requests.Session,
+    invoice_number: str,
+    store_id: str = DEFAULT_STORE_ID,
+    file_name: str = "Invoice",
+) -> bytes:
+    """
+    Convenience wrapper: resolve the human Invoice # to the internal id ->
+    GET the invoice page -> export as PDF.
+    """
+    resolved_id = resolve_invoice_id(session, invoice_number)
+    report_session, control_id, rsproxy = get_invoice_report_session(
+        session, resolved_id, store_id
+    )
+    return export_csv(
+        session, report_session, control_id, rsproxy,
+        file_name=file_name, export_format="PDF",
+    )
+
+
+def find_customer_export_filter_field(soup: BeautifulSoup) -> tuple[str, str, str]:
+    """
+    The "Filter:" dropdown's field name isn't a stable ctl-number -- it
+    shifts slightly between CUSTOMER_EXPORT_URL and its ConstantContact/
+    Mailchimp siblings (Customer Groups/Filter/dates get renumbered when
+    ConsumerInfoReport's two extra fields -- "Show these fields" and the
+    email-only radio -- aren't present). Found by matching option text
+    instead, same as confirmed live in
+    scripts/inspect/verify_customer_export.py.
+
+    Returns (filter_field_name, no_filter_option_value, submit_button_field_name).
+    """
+    button = soup.find("input", attrs={"name": lambda n: n and n.endswith("ctl08$ctl00")})
+    if button is None:
+        raise ValueError("No View Report button found on the customer export page.")
+
+    for select in soup.find_all("select"):
+        for option in select.find_all("option"):
+            text = option.get_text(strip=True).replace("\xa0", " ")
+            if all(marker in text for marker in CUSTOMER_EXPORT_NO_FILTER_MARKERS):
+                return select.get("name"), option.get("value"), button.get("name")
+
+    raise ValueError(
+        "Could not find the 'Filter:' dropdown's 'No filter, show all "
+        "customers.' option on the customer export page."
+    )
+
+
+def pull_customer_export(
+    session: requests.Session,
+    report_url: str = CUSTOMER_EXPORT_URL,
+    file_name: str = "CustomerExport",
+) -> bytes:
+    """
+    Pull the full customer list as CSV -- every customer, regardless of
+    order history (see CUSTOMER_EXPORT_URL / find_customer_export_filter_field()).
+    """
+    soup = get_report_page(session, report_url)
+    filter_field, no_filter_value, button_field = find_customer_export_filter_field(soup)
+
+    payload = extract_hidden_fields(soup)
+    payload.update(extract_other_ctl_fields(soup))
+    payload[filter_field] = no_filter_value
+    payload[button_field] = VIEW_REPORT_BUTTON_VALUE
+
+    resp = session.post(report_url, data=payload)
+    resp.raise_for_status()
+    report_session, control_id, rsproxy = extract_report_session(resp.text)
     return export_csv(session, report_session, control_id, rsproxy, file_name)
 
 

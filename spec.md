@@ -202,6 +202,110 @@ two `/Reporting/`-prefixed pages (`LifeSaverPaymentsPayoutReport`, `ReprintInvoi
 are not ReportViewer pages. `PastDue` renders with no parameter panel. Field
 layouts for all of these are in `report_manifest.json`.
 
+## Invoices — a separate, simpler flow (with one non-obvious step)
+
+`/Reporting/ReprintInvoice` (the "Find Invoice" catalog entry, one of the two
+non-ReportViewer pages above) is a plain search box: entering an invoice number
+loads the real report in an iframe pointing at:
+
+```
+https://lsscloud.com/Reports/Invoice/?StoreId=6006&InvoiceId=<internal id>
+```
+
+Confirmed live 2026-09-17 (invoice #584): **no postback is needed here**, unlike
+WorkOrderList. A plain GET on that URL renders the invoice and already embeds a
+fresh `ReportSession`/`ControlID` in the response — same regex shape as the
+WorkOrderList postback response — so `Format=PDF` export works off that single
+GET.
+
+**Gotcha, also confirmed live 2026-09-17:** the `InvoiceId` that URL needs is
+**not** the human-readable "Invoice #" (`WorkOrderList`'s `invoiceNumber`
+column) — it's a separate internal id. Using the human number directly doesn't
+fail loudly: `/Reports/Invoice/` still returns 200 with a valid-looking
+`ReportSession`/`ControlID` and a well-formed PDF, but every field is unbound —
+`Order Date`/`Last Revised` show `1/1/0001` (.NET `DateTime.MinValue`),
+"Invoice #" itself shows `#Error`, every amount is `$0.00`. It's the report's
+empty-state template, silently exported as a structurally valid PDF. The fix,
+confirmed via live network capture: POST the human Invoice # as JSON to
+
+```
+POST https://lsscloud.com/Invoice/GetStoreInvoiceId/
+Content-Type: application/json
+{"invoiceId": "584"}
+```
+
+which resolves to the internal id (`584` → `10044999`, confirmed pairing) —
+*that* value is what goes in `InvoiceId` on `/Reports/Invoice/`. The exact
+response JSON key wasn't captured before the source browser session expired;
+`resolve_invoice_id()` tries a list of likely candidates and raises with the
+raw response body if none match, so it self-diagnoses rather than silently
+misparsing.
+
+Implementation, `lifesaver_report_pull.py`:
+- `resolve_invoice_id()` — the human-# → internal-id POST above.
+- `get_invoice_report_session()` — GET `/Reports/Invoice/` with the *resolved*
+  id, returns `ReportSession`/`ControlID`/`RSProxy`.
+- `pull_invoice()` — wires both together, then exports.
+- `export_csv()` grew an `export_format` parameter (`"CSV"` default, `"PDF"`
+  for invoices) instead of hardcoding CSV.
+
+Verified end-to-end (resolve → render → export) with
+`scripts/inspect/verify_invoice_endpoint.py`, which prints the raw resolve
+response and warns that a well-formed PDF alone doesn't prove correctness —
+open the file and check for real data, not just `%PDF-` magic bytes (that's
+exactly how the empty-invoice bug above first slipped past testing).
+
+Bulk-pulling a batch of invoices as PDFs is `pull_invoices.py` (invoice
+numbers from a `WorkOrderList` CSV export, or a plain `--ids` list; one login,
+one session, delay between requests, one failure doesn't kill the batch, each
+PDF written to disk as it's pulled).
+
+This is not the same effort as the reverted multi-report generalization above —
+those reports failed because their *CSV* export serializes visual-layout
+internals (textbox/chart/gauge names) instead of data. Invoices are pulled as
+`Format=PDF`, which renders the actual visual layout — exactly what's wanted
+for an invoice document, so that failure mode doesn't apply here.
+
+## Customer list — a report built for exactly this, once found
+
+For "build a customer list," the invoice PDFs are the wrong source — a real
+sample (`pull_invoice`, invoice #584) has the customer's name and cell phone
+only, no email or address, and pulling one is one HTTP round-trip per invoice.
+
+The catalog has three reports built for this instead: **Customer Export**
+(`/Reports/ConsumerInfoReport`), **Constant Contact Export**
+(`/Reports/CustomerInfoExport_ConstantContact`), **Mailchimp Contact Export**
+(`/Reports/CustomerInfoExport_Mailchimp`). These were excluded from the
+original report-coverage sweep because their parameter panel isn't the plain
+two-date-textbox shape that sweep covered — a "Customer Groups" text filter
+plus a "Filter:" dropdown (no filter/show all, by order date range, by order
+$, by order count, top N) — not because they were tried and found to export
+visual-layout garbage like everything else in that sweep.
+
+Confirmed live 2026-09-17: `ConsumerInfoReport`, with `Filter:` set to
+**"No filter, show all customers."**, exports real per-customer columns —
+`firstName, lastName, companyName, address1, address2, city, state,
+postalCode, homePhone, workPhone, faxPhone, cellPhone, firstPurchase,
+lastPurchase, lastPurchaseAmt, totalPurchase, emailAddress, category, ...` —
+as CSV. That specific filter option ignores the report's date-range
+parameters entirely, so the export is **every customer in the database**,
+not scoped to any date window or invoice — confirmed as 672 rows spanning
+years, no truncation.
+
+The `Filter:` dropdown's field name isn't a stable ctl-number — it shifts
+slightly between `ConsumerInfoReport` and its ConstantContact/Mailchimp
+siblings (they lack `ConsumerInfoReport`'s two extra fields: a "Show these
+fields" customization textbox and an email-only radio toggle, which shifts
+every later field's ctl-number). `find_customer_export_filter_field()` in
+`lifesaver_report_pull.py` finds it by matching the "No filter, show all
+customers." option text instead of a hardcoded field name, so it works
+against any of the three variants unchanged.
+
+Implementation: `lifesaver_report_pull.py` —
+`find_customer_export_filter_field()` + `pull_customer_export()`. CLI:
+`pull_customers.py`. Recon record: `scripts/inspect/verify_customer_export.py`
+(used to confirm this before promoting it into real code).
+
 ## Environment / running notes
 
 - Target IDE: VS Code, building with Claude Code.
