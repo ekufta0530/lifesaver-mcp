@@ -13,8 +13,12 @@ tests
 *.db-wal
 *.db-shm
 warehouse_raw
-scripts
-report_manifest.json
+cloud/scripts
+cloud/report_manifest.json
+core
+sqlite_extract
+dashboard
+mason.*
 *.md
 .mcp.json
 .python-version

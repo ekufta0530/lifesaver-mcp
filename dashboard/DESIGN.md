@@ -1,7 +1,7 @@
 # Frame Shop Performance Dashboard — Backend Design
 
 Status: **built** (backend + dashboard, 2026-09-07). Phase 3 of the project;
-Phases 1–2 (report puller + MCP server) are in `spec.md` and deployed. The
+Phases 1–2 (report puller + MCP server) are in `cloud/spec.md` and deployed. The
 pipeline and dashboard run locally and the dashboard auto-publishes on push to
 `main`; the remaining open items are the scheduled data pull and production
 persistence (§12 #6, §15). Per-section status is inline below ("Built:",
@@ -419,7 +419,7 @@ without touching them.
 12. ~~Daily auto-refresh~~ — see §15. **Code** deploys (push to `main` →
     re-render from the GCS warehouse) were automated 2026-09-07
     (`deploy-dashboard`); the scheduled **data** pull (`refresh.yml`) was built
-    2026-09-17 and needs the two IAM grants in DEPLOY.md §7 before its first
+    2026-09-17 and needs the two IAM grants in cloud/DEPLOY.md §7 before its first
     real run.
 13. Fuzzy identity — only if §12 #5 finds enough near-duplicate names to matter.
 
@@ -441,7 +441,7 @@ stays frozen (the warehouse's `is_final` flag guarantees it).
   upload `index.html` + `data.json` to the site bucket. No LifeSaver login, no
   KPI recompute; renders from whatever is in the local `warehouse.db`. Called by
   both `refresh.sh` and the `deploy-dashboard` CI job.
-- **`dashboard/refresh.sh`** — the full cycle: pull db from GCS → `warehouse.job
+- **`dashboard/refresh.sh`** — the full cycle: pull db from GCS → `cloud.warehouse.job
   sync` → `dashboard/publish.sh` → push db + raw back. Runs locally (gcloud auth
   + LIFESAVER creds) and is what the scheduled job will run.
 
@@ -450,7 +450,7 @@ stays frozen (the warehouse's `is_final` flag guarantees it).
    `https://storage.googleapis.com/lifesaver-kpi-dashboard-303f74/index.html`.
 2. ~~Schedule the data pull~~ — **built 2026-09-17**,
    `.github/workflows/refresh.yml`: daily cron (09:17 UTC, adjustable) → pull
-   `warehouse.db` from GCS → `warehouse.job sync` → `dashboard/publish.sh` →
+   `warehouse.db` from GCS → `cloud.warehouse.job sync` → `dashboard/publish.sh` →
    push `warehouse.db` + new raw back. Reuses the `gha-deployer` WIF identity
    from `publish.yml` rather than a Cloud Run Job + Cloud Scheduler — CI/CD
    already existed by the time this got built, so no new API, service account,
@@ -458,10 +458,10 @@ stays frozen (the warehouse's `is_final` flag guarantees it).
    `gha-deployer` that `gcloud` auth being expired blocked applying —
    `storage.objectAdmin` on the warehouse bucket (deploy only has read) and
    `secretmanager.secretAccessor` on `lifesaver-username` / `lifesaver-password`.
-   Commands are in DEPLOY.md §7; run those, then `workflow_dispatch` it once by
+   Commands are in cloud/DEPLOY.md §7; run those, then `workflow_dispatch` it once by
    hand to confirm before trusting the cron.
 3. **LifeSaver single-session.** The refresh workflow and the deployed MCP
-   server (now `--min-instances=1`, per DEPLOY.md §3, to keep the login warm —
+   server (now `--min-instances=1`, per cloud/DEPLOY.md §3, to keep the login warm —
    this raises collision odds versus the min-instances=0 assumption this section
    used to make) both use the one shared session. Self-heals either way — the
    client auto-clears its own stale session and retries once — but a claude.ai

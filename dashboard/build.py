@@ -7,7 +7,7 @@
 Reads the warehouse (read-only) and embeds the full KPI history into the page.
 The page renders client-side: it opens on the *current* month/quarter (the "live"
 view that a daily rebuild keeps moving) and a dropdown reaches every closed 2026
-monthly and quarterly report. Re-run after each `warehouse.job sync` and
+monthly and quarterly report. Re-run after each `cloud.warehouse.job sync` and
 re-deploy the output.
 
 One page per store (``STORES``); a tab bar links the pages. Every store's
@@ -25,8 +25,8 @@ import sqlite3
 from datetime import date, datetime, timezone
 from pathlib import Path
 
-from warehouse.models import CALC_VERSION
-from warehouse.sqlite_import import DATA_THROUGH, SOURCE_WORK_ORDERS
+from core.models import CALC_VERSION
+from sqlite_extract.importer import DATA_THROUGH, SOURCE_WORK_ORDERS
 
 # --- one-off outliers ------------------------------------------------------
 # The Polaris Mission: two 2024 commissions for a SpaceX program (the customer
@@ -342,10 +342,14 @@ def load(db_path: str, store: str = "main", *, today: date | None = None) -> dic
         "(SELECT COUNT(*) FROM visits) visits, "
         "(SELECT ROUND(SUM(revenue)) FROM visits) revenue, "
         "(SELECT MIN(visit_date) FROM visits) first_day, "
-        "(SELECT MAX(visit_date) FROM visits) last_day, "
-        "(SELECT COUNT(*) FROM line_items) line_items, "
-        "(SELECT MAX(pulled_at) FROM raw_pulls) last_pull"
+        "(SELECT MAX(visit_date) FROM visits) last_day"
     ).fetchone())
+    # line items + pulls exist only in the cloud ingest's warehouse
+    tables = {r[0] for r in c.execute("SELECT name FROM sqlite_master WHERE type = 'table'")}
+    has_pulls = "line_items" in tables
+    s["line_items"] = c.execute("SELECT COUNT(*) FROM line_items").fetchone()[0] if has_pulls else 0
+    s["last_pull"] = (c.execute("SELECT MAX(pulled_at) FROM raw_pulls").fetchone()[0]
+                      if has_pulls else None)
 
     # monthly revenue + order (visit) counts -- the "how's business" layer,
     # same revenue basis as the KPIs (visits = retail - discount, voids excluded)

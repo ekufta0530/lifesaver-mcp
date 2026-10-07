@@ -11,7 +11,7 @@ name: refresh dashboard data
 # secrets).
 #
 # Holds the single shared LifeSaver session for its duration (client.logout()
-# releases it when warehouse.job sync finishes) -- overlapping with a live MCP
+# releases it when cloud.warehouse.job sync finishes) -- overlapping with a live MCP
 # call is possible but low-risk: the MCP server auto-clears its own stale
 # session and retries once (see lifesaver/client.py).
 
@@ -63,8 +63,8 @@ jobs:
           LIFESAVER_USERNAME: ${{ steps.secrets.outputs.LIFESAVER_USERNAME }}
           LIFESAVER_PASSWORD: ${{ steps.secrets.outputs.LIFESAVER_PASSWORD }}
         run: |
-          python -m warehouse.job sync
-          python -m warehouse.job status
+          python -m cloud.warehouse.job sync
+          python -m cloud.warehouse.job status
 
       - name: Rebuild + publish dashboard
         run: bash dashboard/publish.sh

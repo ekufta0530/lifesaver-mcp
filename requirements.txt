@@ -7,7 +7,7 @@ pydantic-settings>=2.3
 # MCP server + its HTTP transport
 mcp>=2.1
 uvicorn[standard]>=0.30
-anyio>=4.0        # used directly in mcp_server.server (also an mcp/starlette dep)
+anyio>=4.0        # used directly in cloud.mcp_server.server (also an mcp/starlette dep)
 starlette>=0.40   # JSONResponse in the auth middleware (also an mcp dep)
 
 # Phase 1 FastAPI app (local dev / tests; not used by the deployed MCP server)

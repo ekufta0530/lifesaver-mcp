@@ -32,7 +32,7 @@ gcloud storage cp dashboard/data.json "gs://$SITE_BUCKET/data.json" \
 
 echo "==> rebuild Mason tab from $MASON_SOURCE"
 if gcloud storage cp "$MASON_SOURCE" mason.sqlite; then
-  python -m warehouse.sqlite_import mason.sqlite mason.db
+  python -m sqlite_extract.importer mason.sqlite mason.db
   python -m dashboard.build --store mason --db mason.db --out dashboard/mason.html
   upload_html dashboard/mason.html mason.html
 else

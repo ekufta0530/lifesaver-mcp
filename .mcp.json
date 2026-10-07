@@ -2,7 +2,7 @@
   "mcpServers": {
     "lifesaver": {
       "command": "/Users/erickufta/personal_projects/lifesaver-mcp/.venv/bin/python",
-      "args": ["-m", "mcp_server.server"],
+      "args": ["-m", "cloud.mcp_server.server"],
       "env": {
         "MCP_TRANSPORT": "stdio"
       }

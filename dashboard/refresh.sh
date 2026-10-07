@@ -24,8 +24,8 @@ mkdir -p warehouse_raw
 gcloud storage rsync -r "gs://$WAREHOUSE_BUCKET/warehouse_raw" warehouse_raw
 
 echo "==> sync new work-order data + recompute KPIs"
-python -m warehouse.job sync
-python -m warehouse.job status
+python -m cloud.warehouse.job sync
+python -m cloud.warehouse.job status
 
 echo "==> rebuild + publish dashboard"
 dashboard/publish.sh
