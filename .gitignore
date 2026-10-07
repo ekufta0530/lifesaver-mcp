@@ -21,4 +21,8 @@ warehouse_raw/
 # generated dashboard
 dashboard/index.html
 dashboard/data.json
+dashboard/mason.html
+
+# Mason store's LifeSaver extract (customer data), pulled by publish.sh
+mason.sqlite
 .DS_Store

@@ -65,3 +65,20 @@ def test_partial_prior_year_excluded_variant_present(db):
     assert "partial_ly_v_ex" in business
     # no outlier visit lands in the current partial month's prior-year window
     assert business["partial_ly_rev_ex"] == business["partial_ly_rev"]
+
+
+def test_main_store_page_keeps_its_tab_and_outlier(db):
+    from dashboard.build import render
+    data = load(db)
+    assert data["store"]["key"] == "main" and data["store"]["snapshot"] is False
+    html = render(data)
+    assert '<a href="index.html" aria-current="page">' in html
+    assert '<a href="mason.html">' in html
+
+
+def test_nice_ceiling_leaves_headroom():
+    from dashboard.build import _nice_ceiling
+    assert _nice_ceiling(0.7044, "pct") == pytest.approx(0.8)
+    assert _nice_ceiling(0.0228, "pct") == pytest.approx(0.03)
+    assert _nice_ceiling(141, "days") == 175
+    assert _nice_ceiling(620, "int") == 700

@@ -2,12 +2,17 @@
 
     python -m dashboard.build                 # -> dashboard/index.html
     python -m dashboard.build --db warehouse.db --out dashboard/index.html --json dashboard/data.json
+    python -m dashboard.build --store mason --db mason.db --out dashboard/mason.html
 
 Reads the warehouse (read-only) and embeds the full KPI history into the page.
 The page renders client-side: it opens on the *current* month/quarter (the "live"
 view that a daily rebuild keeps moving) and a dropdown reaches every closed 2026
 monthly and quarterly report. Re-run after each `warehouse.job sync` and
 re-deploy the output.
+
+One page per store (``STORES``); a tab bar links the pages. Every store's
+warehouse has the same tables, so only the copy, outliers and chart ranges
+differ between them.
 """
 
 from __future__ import annotations
@@ -15,11 +20,13 @@ from __future__ import annotations
 import argparse
 import calendar
 import json
+import math
 import sqlite3
 from datetime import date, datetime, timezone
 from pathlib import Path
 
 from warehouse.models import CALC_VERSION
+from warehouse.sqlite_import import DATA_THROUGH, SOURCE_WORK_ORDERS
 
 # --- one-off outliers ------------------------------------------------------
 # The Polaris Mission: two 2024 commissions for a SpaceX program (the customer
@@ -121,6 +128,142 @@ META = [
     },
 ]
 
+# --- stores -------------------------------------------------------------
+# One dashboard page per store. Keys:
+#   tab / page    -- tab-bar label and the published file it links to
+#   as_of         -- "today": the wall clock is "now" (daily-synced warehouse);
+#                    "data": the latest order date is "now" (periodic snapshot)
+#   chart_from    -- first month on the revenue + new-customer bar charts
+#   meta          -- per-KPI overrides of META; a store without hand-tuned
+#                    ceilings gets them derived from its own data
+#   outliers      -- visit_ids the "exclude outlier" toggle can remove
+#   companion     -- the card beside the reactivation chart; {pool} becomes the
+#                    report month's lapsed-pool size
+#   method        -- the "How these are built" bullets (HTML)
+
+_M_VISIT = ("<b>A purchase is a visit</b> — one customer on one day. Several work orders "
+            "dropped off together count once.")
+_M_LIVE_YOY = ("<b>Year-over-year on the live month</b> compares only the same run of days a "
+               "year earlier, so a part-month isn't measured against a whole one. \"On pace\" is "
+               "the month-to-date rate carried to month end.")
+_M_MONTHLY = ("<b>Monthly performance vs. last year</b> lines each month up against the same "
+              "month a year earlier — revenue, order count, and average ticket. Completed months "
+              "use the full month; the current month is month-to-date against the same run of "
+              "days last year. Toggle between the calendar year so far and a rolling 12 months.")
+_M_COHORT = ("<b>Cohort metrics</b> (first&nbsp;&rarr;&nbsp;second, median days) use the 12 "
+             "monthly cohorts that matured a year before the report month, so the sample is stable.")
+
+STORES: dict[str, dict] = {
+    "main": {
+        "tab": "Main store",
+        "page": "index.html",
+        "kicker": "Lifesaver &middot; Work Order History",
+        "as_of": "today",
+        "chart_from": "2024-08",
+        "meta": {},
+        "outliers": OUTLIER_VISIT_IDS,
+        "outlier_label": OUTLIER_LABEL,
+        "reactivation_delta": "pre-campaign baseline",
+        "cohort_blurb": "The store opened on Lifesaver in May 2024.",
+        "companion": (
+            "<h2>The win-back dial</h2><p>No reactivation campaign has run, so this sits near "
+            "zero — the pre-campaign baseline. When a win-back push goes out to 12-month-lapsed "
+            "customers (email, postcard, a call), this is the number that moves if it worked. "
+            "The lapsed pool is the addressable audience.</p>"
+        ),
+        "method": [
+            _M_VISIT,
+            "<b>Revenue is retail minus discount</b>, booked to the order date. Voided orders are "
+            "excluded from every figure; a same-day re-do keeps only the corrected order.",
+            _M_LIVE_YOY,
+            _M_MONTHLY,
+            "<b>The Polaris Mission toggle.</b> In Oct–Nov 2024 the store took two commissions for "
+            "a SpaceX program (~$39.5k net combined, roughly ten normal tickets). Left in, they "
+            "make any comparison reaching back to late 2024 look like a sharp drop even though "
+            "the order <i>count</i> is flat. The toggle removes just those two orders from the "
+            "last-year revenue and average-ticket figures — it only touches the Oct and Nov rows, "
+            "so it shows its effect in the trailing-12-months view (checking it there switches "
+            "you to that view). Retention figures are unaffected.",
+            _M_COHORT,
+            "<b>Live vs closed.</b> The current month and quarter update with each daily data "
+            "pull. Once a period closes its figures are frozen — pick it from the dropdown to "
+            "see the report as it stood.",
+            "<b>Complete history.</b> Invoice&nbsp;#1 is a May&nbsp;2024 test order — there is no "
+            "earlier data to be missing, so cohorts are unbiased.",
+        ],
+    },
+    "mason": {
+        "tab": "Mason",
+        "page": "mason.html",
+        "kicker": "Mason &middot; LifeSaver POS history since 2015",
+        "as_of": "data",
+        "chart_from": "2015-06",
+        # LifeSaver starts June 2015: anyone who already shopped before then looks
+        # "new" in 2015-16, so cohort metrics wait for cohorts formed a year in,
+        # and trailing-12 metrics for the first full year.
+        "meta": {
+            "first_to_second_rate": {
+                "baseline": None, "plot_from": "2017-06",
+                "long": (
+                    "Of every customer whose first-ever visit fell in a given month, what "
+                    "fraction returned for a second visit within 365 days? Reported as the "
+                    "blend of the twelve monthly cohorts whose 12-month window closed a year "
+                    "before the report date — one month alone is too small to trust. A "
+                    "customer who bought once and never came back counts against this forever."
+                ),
+            },
+            "repeat_revenue_share": {"baseline": None, "plot_from": "2016-05"},
+            "median_days_to_second": {"baseline": None, "plot_from": "2017-06"},
+            "active_customers_ttm": {
+                "baseline": None, "plot_from": "2016-05",
+                "long": (
+                    "How many different customers made at least one visit in the trailing 12 "
+                    "months — the real size of the engaged base. Different from "
+                    "total-customers-ever: someone who hasn't visited in over a year has "
+                    "effectively lapsed and drops out of this count."
+                ),
+            },
+            "reactivation_rate": {
+                "baseline": None, "plot_from": "2017-06",
+                "long": (
+                    "At the month's start, take every customer who had bought before but not in "
+                    "the previous 365 days — the lapsed pool. What share of them bought something "
+                    "during the month? With over a decade of history the pool is large, so even "
+                    "a fraction of a percent is real people coming back."
+                ),
+            },
+        },
+        "outliers": (),
+        "outlier_label": "",
+        "reactivation_delta": None,
+        "cohort_blurb": "LifeSaver history starts June 2015, so the first year includes "
+                        "existing customers seen for the first time.",
+        "companion": (
+            "<h2>The lapsed pool</h2><p>{pool} past customers hadn't bought in over a year "
+            "going into this month — the audience for any win-back push (email, postcard, a "
+            "call). Reactivation is the share of them who came back; it is the number that "
+            "should move when a campaign goes out.</p>"
+        ),
+        "method": [
+            _M_VISIT,
+            "<b>Revenue is the ticket subtotal</b> — pre-tax and after discounts, the same "
+            "\"Sales\" figure the store's LifeSaver reports — booked to the order date. Voided "
+            "orders are excluded from every figure.",
+            "<b>Customers are LifeSaver customer numbers</b>, so the same person is matched "
+            "across years without relying on how their name was typed.",
+            _M_LIVE_YOY,
+            _M_MONTHLY,
+            _M_COHORT,
+            "<b>A periodic snapshot.</b> This store's figures come from a copy of its LifeSaver "
+            "database, not a daily feed; the newest order date in that copy is treated as "
+            "\"today\", so the month it falls in is the open (month-to-date) month.",
+            "<b>History starts June 2015.</b> Customers who shopped before LifeSaver was set up "
+            "look new in 2015–16, so cohort charts start mid-2017 and trailing-12 charts mid-2016, "
+            "once that effect has washed out.",
+        ],
+    },
+}
+
 FONT_LINK = (
     "https://fonts.googleapis.com/css2?"
     "family=Spectral:wght@400;500;600&"
@@ -130,9 +273,47 @@ FONT_LINK = (
 
 # --- data ----------------------------------------------------------------
 
-def load(db_path: str) -> dict:
+def _nice_ceiling(top: float, unit: str) -> float:
+    """A round y-axis top with ~10% headroom over the highest plotted value."""
+    if unit == "pct":
+        step = 0.01 if top < 0.1 else 0.05
+    else:
+        step = 25 if unit == "days" else 10 ** max(1, len(str(int(top))) - 1)
+    return round(math.ceil(top * 1.1 / step) * step, 4) or step
+
+
+def store_meta(store: str, series: dict[str, dict[str, dict]]) -> list[dict]:
+    """META with the store's overrides; ceilings it doesn't pin are fitted to its data."""
+    overrides = STORES[store]["meta"]
+    out = []
+    for m in META:
+        o = overrides.get(m["key"])
+        if o is None:
+            out.append(m)
+            continue
+        m = {**m, **o}
+        if "ceiling" not in o:
+            vals = [r["v"] for mo, r in series[m["key"]].items()
+                    if mo >= m["plot_from"] and r["v"] is not None]
+            if vals:
+                m["ceiling"] = _nice_ceiling(max(vals), m["unit"])
+        out.append(m)
+    return out
+
+
+def load(db_path: str, store: str = "main", *, today: date | None = None) -> dict:
+    cfg = STORES[store]
     c = sqlite3.connect(db_path)
     c.row_factory = sqlite3.Row
+
+    def checkpoint(name: str) -> str | None:
+        r = c.execute("SELECT value FROM sync_checkpoints WHERE name = ?", (name,)).fetchone()
+        return None if r is None else r["value"]
+
+    if today is None:
+        data_through = checkpoint(DATA_THROUGH)
+        today = (date.fromisoformat(data_through) if cfg["as_of"] == "data" and data_through
+                 else date.today())
 
     series: dict[str, dict[str, dict]] = {}
     for m in META:
@@ -176,8 +357,9 @@ def load(db_path: str) -> dict:
         )
     }
 
+    s["work_orders"] = int(checkpoint(SOURCE_WORK_ORDERS) or 0)
+
     all_months = sorted({mo for k in series.values() for mo in k})
-    today = date.today()
     today_month = today.strftime("%Y-%m")
     current_month = min(today_month, all_months[-1]) if all_months else today_month
 
@@ -196,24 +378,25 @@ def load(db_path: str) -> dict:
     # outlier isolation -- the "exclude the Polaris Mission" toggle subtracts
     # these client-side, so ship the per-month contribution + the same partial
     # prior-year window with the outlier removed.
-    qs = ",".join("?" * len(OUTLIER_VISIT_IDS))
+    outliers = cfg["outliers"]
+    qs = ",".join("?" * len(outliers))
     outlier_monthly = {
         r["m"]: {"rev": r["rev"] or 0.0, "v": r["v"]}
         for r in c.execute(
             f"SELECT substr(visit_date, 1, 7) m, ROUND(SUM(revenue), 2) rev, COUNT(*) v "
             f"FROM visits WHERE visit_id IN ({qs}) GROUP BY m ORDER BY m",
-            OUTLIER_VISIT_IDS,
+            outliers,
         )
     }
     otot = c.execute(
         f"SELECT COALESCE(ROUND(SUM(revenue), 2), 0) rev, COUNT(*) v "
         f"FROM visits WHERE visit_id IN ({qs})",
-        OUTLIER_VISIT_IDS,
+        outliers,
     ).fetchone()
     ly_ex = c.execute(
         f"SELECT COALESCE(ROUND(SUM(revenue), 2), 0) rev, COUNT(*) v FROM visits "
         f"WHERE visit_date BETWEEN ? AND ? AND visit_id NOT IN ({qs})",
-        (date(cy - 1, cm, 1).isoformat(), date(cy - 1, cm, ly_last).isoformat(), *OUTLIER_VISIT_IDS),
+        (date(cy - 1, cm, 1).isoformat(), date(cy - 1, cm, ly_last).isoformat(), *outliers),
     ).fetchone()
 
     c.close()
@@ -230,7 +413,7 @@ def load(db_path: str) -> dict:
         "partial_ly_rev_ex": ly_ex["rev"],
         "partial_ly_v_ex": ly_ex["v"],
         "outlier": {
-            "label": OUTLIER_LABEL,
+            "label": cfg["outlier_label"],
             "monthly": outlier_monthly,
             "months": list(outlier_monthly),
             "total_rev": otot["rev"],
@@ -239,7 +422,17 @@ def load(db_path: str) -> dict:
     }
 
     return {
-        "meta": META,
+        "store": {
+            "key": store,
+            "snapshot": cfg["as_of"] == "data",
+            "data_through": today.isoformat(),
+            "chart_from": cfg["chart_from"],
+            "reactivation_delta": cfg["reactivation_delta"],
+            "cohort_blurb": cfg["cohort_blurb"],
+            "companion": cfg["companion"],
+        },
+        "tabs": [{"key": k, "label": v["tab"], "page": v["page"]} for k, v in STORES.items()],
+        "meta": store_meta(store, series),
         "series": series,
         "cohorts": cohorts,
         "summary": s,
@@ -255,23 +448,37 @@ def load(db_path: str) -> dict:
 
 def render(data: dict) -> str:
     s = data["summary"]
+    store = data["store"]["key"]
+    cfg = STORES[store]
     first_day = date.fromisoformat(s["first_day"])
     last_day = date.fromisoformat(s["last_day"])
     window = f"{first_day:%b %Y} – {last_day:%b %Y}"
+    title = "Frame Shop Performance" + ("" if store == "main" else f" · {cfg['tab']}")
+    current = ' aria-current="page"'
+    tabs = "".join(
+        f'<a href="{t["page"]}"{current if t["key"] == store else ""}>{t["label"]}</a>'
+        for t in data["tabs"]
+    )
+    method = "\n      ".join(f"<li>{b}</li>" for b in cfg["method"])
+    revenue = (f"${s['revenue'] / 1e6:.2f}M" if s["revenue"] >= 1e6
+               else f"${s['revenue'] / 1000:,.0f}k")
+    volume = (f"{s['line_items']:,} line items" if s["line_items"]
+              else f"{s['work_orders']:,} work orders")
 
     return f"""<!doctype html>
 <!-- generated by dashboard/build.py -->
 <meta charset="utf-8">
-<title>Frame Shop Performance</title>
+<title>{title}</title>
 <meta name="description" content="Monthly revenue, year-over-year performance, and customer-retention KPIs for the framing store.">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{FONT_LINK}">
 <style>{CSS}</style>
 
 <div class="page">
+  <nav class="storetabs" aria-label="Store">{tabs}</nav>
   <header class="masthead">
     <div class="brand">
-      <p class="kicker">Lifesaver &middot; Work Order History</p>
+      <p class="kicker">{cfg['kicker']}</p>
       <h1>Frame Shop Performance</h1>
     </div>
     <dl class="context">
@@ -279,7 +486,7 @@ def render(data: dict) -> str:
       <div><dt>Customers</dt><dd>{s['customers']:,}</dd></div>
       <div><dt>Repeat</dt><dd>{s['repeat_customers']:,}</dd></div>
       <div><dt>Visits</dt><dd>{s['visits']:,}</dd></div>
-      <div><dt>Revenue</dt><dd>${s['revenue'] / 1000:,.0f}k</dd></div>
+      <div><dt>Revenue</dt><dd>{revenue}</dd></div>
     </dl>
   </header>
 
@@ -301,14 +508,7 @@ def render(data: dict) -> str:
   <section class="method">
     <h2>How these are built</h2>
     <ul>
-      <li><b>A purchase is a visit</b> — one customer on one day. Several work orders dropped off together count once.</li>
-      <li><b>Revenue is retail minus discount</b>, booked to the order date. Voided orders are excluded from every figure; a same-day re-do keeps only the corrected order.</li>
-      <li><b>Year-over-year on the live month</b> compares only the same run of days a year earlier, so a part-month isn't measured against a whole one. "On pace" is the month-to-date rate carried to month end.</li>
-      <li><b>Monthly performance vs. last year</b> lines each month up against the same month a year earlier — revenue, order count, and average ticket. Completed months use the full month; the current month is month-to-date against the same run of days last year. Toggle between the calendar year so far and a rolling 12 months.</li>
-      <li><b>The Polaris Mission toggle.</b> In Oct–Nov 2024 the store took two commissions for a SpaceX program (~$39.5k net combined, roughly ten normal tickets). Left in, they make any comparison reaching back to late 2024 look like a sharp drop even though the order <i>count</i> is flat. The toggle removes just those two orders from the last-year revenue and average-ticket figures — it only touches the Oct and Nov rows, so it shows its effect in the trailing-12-months view (checking it there switches you to that view). Retention figures are unaffected.</li>
-      <li><b>Cohort metrics</b> (first&nbsp;&rarr;&nbsp;second, median days) use the 12 monthly cohorts that matured a year before the report month, so the sample is stable.</li>
-      <li><b>Live vs closed.</b> The current month and quarter update with each daily data pull. Once a period closes its figures are frozen — pick it from the dropdown to see the report as it stood.</li>
-      <li><b>Complete history.</b> Invoice&nbsp;#1 is a May&nbsp;2024 test order — there is no earlier data to be missing, so cohorts are unbiased.</li>
+      {method}
     </ul>
     <details>
       <summary>Full monthly data</summary>
@@ -317,7 +517,7 @@ def render(data: dict) -> str:
   </section>
 
   <footer class="colophon">
-    <span>Generated {data['generated']} &middot; calc v{data['calc_version']} &middot; {s['line_items']:,} line items</span>
+    <span>Generated {data['generated']} &middot; calc v{data['calc_version']} &middot; {volume}</span>
   </footer>
 </div>
 
@@ -328,11 +528,11 @@ def render(data: dict) -> str:
 
 def _table(data: dict) -> str:
     months = sorted({m for k in data["series"].values() for m in k})
-    head = "".join(f"<th>{m['label']}</th>" for m in META)
+    head = "".join(f"<th>{m['label']}</th>" for m in data["meta"])
     body = []
     for mo in months:
         cells = [f'<th scope="row">{_ml(mo)}</th>']
-        for meta in META:
+        for meta in data["meta"]:
             row = data["series"][meta["key"]].get(mo)
             if row and row["v"] is not None:
                 txt = _fmt(row["v"], meta["unit"])
@@ -383,6 +583,15 @@ CSS = r"""
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
+
+.storetabs{display:flex;gap:4px;margin:0 0 22px;border-bottom:1px solid var(--hair);
+  overflow-x:auto;scrollbar-width:none}
+.storetabs a{font:600 11px var(--sans);letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;padding:9px 14px 10px;margin-bottom:-1px;
+  border-bottom:2px solid transparent;white-space:nowrap}
+.storetabs a:hover{color:var(--ink)}
+.storetabs a[aria-current="page"]{color:var(--accent);border-bottom-color:var(--accent)}
+.storetabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 html{overflow-x:hidden}
 body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
   font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
@@ -553,7 +762,7 @@ tbody th{text-align:left;font-weight:500;color:var(--muted)}
   #tiles .tile:last-child{grid-column:auto}
 }
 @media (prefers-reduced-motion:no-preference){
-  .draw .chart .ln:not(.tail){stroke-dasharray:1200;stroke-dashoffset:1200;animation:draw .9s ease .1s forwards}
+  .draw .chart .ln:not(.tail){stroke-dasharray:1;stroke-dashoffset:1;animation:draw .9s ease .1s forwards}
   @keyframes draw{to{stroke-dashoffset:0}}
 }
 """
@@ -574,6 +783,14 @@ APP_JS = r"""
     return Math.round(v).toLocaleString(); }
   function esc(s){ return s.replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
   function qOf(m){ return Math.ceil(+m.split('-')[1]/3); }
+  // x-axis label for bar i of a monthly series: every `every`th month over a
+  // short span, each January (as the year) once it covers several years. The
+  // last two bars stay clear for the end label.
+  function axisTick(ms,i,every){
+    if(ms.length>40) return i<ms.length-9 && ms[i].slice(5)==='01' ? ms[i].slice(0,4) : null;
+    if(i>=ms.length-2) return null;
+    return i%every===0 ? ml(ms[i]) : null;
+  }
   function qMonths(q){ var s=(q-1)*3+1; return [0,1,2].map(function(i){return '2026-'+String(s+i).padStart(2,'0');}); }
 
   // ---- period list: live current month + quarter, then closed history ----
@@ -585,10 +802,13 @@ APP_JS = r"""
   for(var mo=+CUR.split('-')[1]-1;mo>=1;mo--){ var m='2026-'+String(mo).padStart(2,'0');
     periods.push({id:'m'+m, kind:'month', asOf:m, label:mname(m)+' 2026'}); }
 
+  // a snapshot store's "now" is its newest order, not the clock -- its open
+  // month is the latest one on record rather than a live one
+  var SNAP = D.store.snapshot, OPEN = SNAP ? 'latest' : 'live';
   var sel = document.getElementById('period');
   periods.forEach(function(p){
     var o=document.createElement('option'); o.value=p.id;
-    o.textContent = p.label + (p.live ? '  —  live' : '');
+    o.textContent = p.label + (p.live ? '  —  '+OPEN : '');
     sel.appendChild(o);
   });
 
@@ -634,7 +854,7 @@ APP_JS = r"""
     if(solid.length>1){
       var area = dstr(solid)+' L '+solid[solid.length-1][0].toFixed(1)+' '+(PT+PH)+' L '+solid[0][0].toFixed(1)+' '+(PT+PH)+' Z';
       g.push('<path class="wash" d="'+area+'"/>');
-      g.push('<path class="ln" d="'+dstr(solid)+'"/>');
+      g.push('<path class="ln" pathLength="1" d="'+dstr(solid)+'"/>');
     }
     if(tail.length>1) g.push('<path class="ln tail" d="'+dstr(tail)+'"/>');
     if(solid.length) g.push('<circle class="pt" cx="'+solid[solid.length-1][0].toFixed(1)+'" cy="'+solid[solid.length-1][1].toFixed(1)+'" r="3.5"/>');
@@ -689,6 +909,7 @@ APP_JS = r"""
   function usd(v){
     if(v==null || isNaN(v)) return '—';
     var a=Math.abs(v), sg=v<0?'-':'';
+    if(a>=1000000) return sg+'$'+(a/1000000).toFixed(2)+'M';
     if(a>=100000) return sg+'$'+Math.round(a/1000)+'k';
     if(a>=1000)   return sg+'$'+(a/1000).toFixed(1)+'k';
     return sg+'$'+Math.round(a);
@@ -778,7 +999,7 @@ APP_JS = r"""
   function revBarSVG(sel){
     var B=D.business, M=B.monthly;
     var W=960, H=210, L=46, R=14, T=12, Bt=26, w=W-L-R, h=H-T-Bt;
-    var ms=Object.keys(M).filter(function(m){return m>='2024-08' && m<=CUR;}).sort();
+    var ms=Object.keys(M).filter(function(m){return m>=D.store.chart_from && m<=CUR;}).sort();
     var n=ms.length; if(!n) return '<svg viewBox="0 0 '+W+' '+H+'"></svg>';
     var ceil=Math.ceil(Math.max.apply(null, ms.map(function(m){return M[m].rev;}))/10000)*10000 || 10000;
     var X=function(i){ return L + (n>1 ? w*i/(n-1) : w/2); };
@@ -797,8 +1018,9 @@ APP_JS = r"""
       g.push('<rect class="'+cls+'" x="'+(cx-bw/2).toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw.toFixed(1)+
         '" height="'+bh.toFixed(1)+'" rx="1"><title>'+esc(ml(m))+': '+lbl+
         (m===B.partial_month?' so far':'')+'</title></rect>');
-      if(i%3===0 && i<n-2)
-        g.push('<text class="ax" x="'+cx.toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+esc(ml(m))+'</text>');
+      var tick=axisTick(ms,i,3);
+      if(tick)
+        g.push('<text class="ax" x="'+cx.toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+esc(tick)+'</text>');
     });
     g.push('<text class="ax" x="'+X(n-1).toFixed(1)+'" y="'+(H-8)+'" text-anchor="end">'+esc(ml(ms[n-1]))+'</text>');
     var pts=[];
@@ -932,7 +1154,10 @@ APP_JS = r"""
   function render(pid){
     var p = periods.filter(function(x){return x.id===pid;})[0] || periods[0];
     var tag = document.getElementById('period-tag');
-    if(p.live){
+    if(p.live && SNAP){
+      var dt = D.store.data_through;
+      tag.textContent = 'Latest snapshot · orders through ' + mDay(dt.slice(0,7), +dt.slice(8)) + ', ' + dt.slice(0,4);
+    } else if(p.live){
       tag.innerHTML = '<span class="badge"><span class="dot"></span>Live</span> · updated ' + esc(D.generated);
     } else {
       var closed = p.kind==='quarter' ? qMonths(p.q)[2] : p.asOf;
@@ -961,8 +1186,8 @@ APP_JS = r"""
 
       // delta
       var dtxt='', dcls='flat';
-      if(meta.key==='reactivation_rate'){
-        dtxt = '<span class="since">pre-campaign baseline</span>';
+      if(meta.key==='reactivation_rate' && D.store.reactivation_delta){
+        dtxt = '<span class="since">'+esc(D.store.reactivation_delta)+'</span>';
       } else if(head && ser[cmpMonth] && ser[cmpMonth].v!=null){
         var dv = cur - ser[cmpMonth].v;
         var since = ' <span class="since">vs ' + ml(cmpMonth) + '</span>';
@@ -979,7 +1204,7 @@ APP_JS = r"""
       var partialTag = head && !head.final
         ? ' · <span class="partial-note">' + mname(p.asOf) + ' still open</span>' : '';
       var asof = head ? (mname(p.asOf).slice(0,3) + ' ’' + p.asOf.slice(2,4) +
-        (head.final ? ' · final' : ' · live')) : '';
+        (head.final ? ' · final' : ' · '+OPEN)) : '';
 
       var t = document.createElement('article'); t.className = 'tile';
       t.innerHTML =
@@ -1010,20 +1235,18 @@ APP_JS = r"""
 
       if(meta.key==='reactivation_rate'){
         var aside = document.createElement('aside'); aside.className = 'card companion';
-        aside.innerHTML = '<h2>The win-back dial</h2><p>No reactivation campaign has run, ' +
-          'so this sits near zero — the pre-campaign baseline. When a win-back push goes ' +
-          'out to 12-month-lapsed customers (email, postcard, a call), this is the number that ' +
-          'moves if it worked. The lapsed pool is the addressable audience.</p>';
+        aside.innerHTML = D.store.companion.replace('{pool}',
+          head && head.d!=null ? Math.round(head.d).toLocaleString() : 'The');
         charts.appendChild(aside);
       }
     });
 
     // bar chart: new customers per month, up to the report month
     var bar = document.createElement('figure'); bar.className = 'card wide';
-    var cdata = D.cohorts.filter(function(c){ return c.m>='2024-08' && c.m<=p.asOf && c.m<D.current_month; });
+    var cdata = D.cohorts.filter(function(c){ return c.m>=D.store.chart_from && c.m<=p.asOf && c.m<D.current_month; });
     bar.innerHTML = '<figcaption><h2>New customers per month</h2>' +
       '<p class="blurb">First-ever visits — cohort-size context for the rates above. ' +
-      'The store opened on Lifesaver in May 2024.</p></figcaption>' + barSVG(cdata);
+      esc(D.store.cohort_blurb) + '</p></figcaption>' + barSVG(cdata);
     charts.appendChild(bar);
 
     first = false;
@@ -1042,23 +1265,33 @@ APP_JS = r"""
       var cx = xOf(i,n), bh = PH*c.n/ceil, by = PT+PH-bh;
       g.push('<rect class="bar" x="'+(cx-bw/2).toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+bw.toFixed(1)+
         '" height="'+bh.toFixed(1)+'" rx="1"><title>'+esc(ml(c.m))+': '+c.n+' new</title></rect>');
-      if(i%4===0 && i<n-2)
-        g.push('<text class="ax" x="'+cx.toFixed(1)+'" y="'+(CH-7)+'" text-anchor="middle">'+esc(ml(c.m))+'</text>');
+      var tick=axisTick(data.map(function(d){return d.m;}),i,4);
+      if(tick)
+        g.push('<text class="ax" x="'+cx.toFixed(1)+'" y="'+(CH-7)+'" text-anchor="middle">'+esc(tick)+'</text>');
     });
     g.push('<text class="ax" x="'+xOf(n-1,n).toFixed(1)+'" y="'+(CH-7)+'" text-anchor="end">'+esc(ml(data[n-1].m))+'</text>');
     return '<svg viewBox="0 0 '+CW+' '+CH+'" role="img" class="chart">'+g.join('')+'</svg>';
+  }
+
+  // switching store tabs keeps the chosen report period
+  function syncTabs(pid){
+    document.querySelectorAll('.storetabs a').forEach(function(a){
+      a.href = a.getAttribute('href').split('?')[0] + '?p=' + encodeURIComponent(pid);
+    });
   }
 
   sel.addEventListener('change', function(){
     render(sel.value);
     var u = new URL(location.href); u.searchParams.set('p', sel.value);
     history.replaceState(null, '', u);
+    syncTabs(sel.value);
   });
 
   var want = new URLSearchParams(location.search).get('p');
   var start = periods.some(function(p){return p.id===want;}) ? want : periods[0].id;
   sel.value = start;
   render(start);
+  if(want) syncTabs(start);
   renderYoY();
 })();
 """
@@ -1066,12 +1299,13 @@ APP_JS = r"""
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--store", choices=list(STORES), default="main")
     ap.add_argument("--db", default="warehouse.db")
     ap.add_argument("--out", default="dashboard/index.html")
     ap.add_argument("--json", help="also write the embedded data to this path")
     args = ap.parse_args(argv)
 
-    data = load(args.db)
+    data = load(args.db, args.store)
     Path(args.out).write_text(render(data), encoding="utf-8")
     if args.json:
         Path(args.json).write_text(json.dumps(data, indent=2), encoding="utf-8")
